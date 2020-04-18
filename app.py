@@ -10,12 +10,8 @@ import numpy as np
 datos = pd.read_csv("https://gist.githubusercontent.com/fatrianaa1/76c832481a4fdb2e3683c2b232b5476f/raw/data_acciones.csv", delimiter = "\t")
 datos["Fecha"] = pd.to_datetime(datos["fecha"], format = "%d/%m/%Y %H:%M:%S")
 datos = datos[datos["Cantidad"] > 0]
+lista_de_acciones = list(datos['Nemotecnico'].value_counts().sort_index().index)
 
-# Definir variables:
-myheading1 = 'Plotly Dash -- multiple tabs'
-tabtitle = 'dash tabs'
-sourceurl = 'https://dash.plot.ly/dash-core-components/tabs'
-githublink = 'https://github.com/austinlasseter/dash-multitab-simple
 
 # Inicializar la aplicación:
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
@@ -26,30 +22,16 @@ app.title= "Valkiria"
 
 # Configurar aplicación
 app.layout = html.Div([
-    html.Div([
-        html.H2("Mi Aplicación"),
-        html.Img(src="/assets/stock-icon.png")
-    ], className="banner"),
-
-    html.Div([
-        dcc.Input(id="stock-input", value="ECOPETROL", type="text"),
-        html.Button(id="submit-button", n_clicks=0, children="Submit")
-    ]),
-
-    html.Div([
-        html.Div([
-            dcc.Graph(
-                id="graph_close",
-            )
-        ], className="six columns"),
-
-        html.Div([
-            html.H3("Market News"),
-            generate_html_table()
-        ], className="six columns"),
-
-    ],className="row")
+    html.H3('2016 Presidential Election: Vote Totals by Jurisdiction'),
+    dcc.Dropdown(
+        id= "dropdown",
+        options=[{"label": i, "value": i} for i in lista_de_acciones],
+        value= "ECOPETROL"
+    ),
+    html.Br(),
+    dcc.Graph(id='grafico_principal')
 ])
+
 
 
 
