@@ -1,11 +1,50 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
 
 # Definir variables
+data = pd.read_csv("https://gist.githubusercontent.com/fatrianaa1/76c832481a4fdb2e3683c2b232b5476f/raw/data_acciones.csv", delimiter = "\t")
+data["Fecha"] = pd.to_datetime(data["fecha"], format = "%d/%m/%Y %H:%M:%S")
+
+# Configurar aplicación
+app = dash.Dash(__name__)
+app.layout = html.Div([
+    html.Div([
+        html.H2("Stock App"),
+        html.Img(src="/assets/stock-icon.png")
+    ], className="banner"),
+
+    html.Div([
+        dcc.Input(id="stock-input", value="ECOPETROL", type="text"),
+        html.Button(id="submit-button", n_clicks=0, children="Submit")
+    ]),
+
+    html.Div([
+        html.Div([
+            dcc.Graph(
+                id="graph_close",
+            )
+        ], className="six columns"),
+
+        html.Div([
+            html.H3("Market News"),
+            generate_html_table()
+        ], className="six columns"),
+
+    ],className="row")
+])
+
+app.css.append_css({
+    "external_url":"https://codepen.io/chriddyp/pen/bWLwgP.css"
+})
+
+# Definir callbacks:
+@app.callback(Output("graph_close")
+
 beers=['Chesapeake Stout', 'Snake Dog IPA', 'Imperial Porter', 'Double Dog IPA']
 ibu_values=[35, 60, 85, 75]
 abv_values=[5.4, 7.1, 9.2, 4.3]
@@ -48,18 +87,6 @@ app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
 server = app.server
 app.title=tabtitle
 
-########### Set up the layout
-app.layout = html.Div(children=[
-    html.H1(myheading),
-    dcc.Graph(
-        id='flyingdog',
-        figure=beer_fig
-    ),
-    html.A('Code on Github', href=githublink),
-    html.Br(),
-    html.A('Data Source', href=sourceurl),
-    ]
-)
 
 if __name__ == '__main__':
     app.run_server()
