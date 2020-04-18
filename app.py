@@ -6,15 +6,28 @@ import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
 
-# Definir variables
-data = pd.read_csv("https://gist.githubusercontent.com/fatrianaa1/76c832481a4fdb2e3683c2b232b5476f/raw/data_acciones.csv", delimiter = "\t")
-data["Fecha"] = pd.to_datetime(data["fecha"], format = "%d/%m/%Y %H:%M:%S")
+# Definir tabla de datos:
+datos = pd.read_csv("https://gist.githubusercontent.com/fatrianaa1/76c832481a4fdb2e3683c2b232b5476f/raw/data_acciones.csv", delimiter = "\t")
+datos["Fecha"] = pd.to_datetime(datos["fecha"], format = "%d/%m/%Y %H:%M:%S")
+datos = datos[datos["Cantidad"] > 0]
+
+# Definir variables:
+myheading1 = 'Plotly Dash -- multiple tabs'
+tabtitle = 'dash tabs'
+sourceurl = 'https://dash.plot.ly/dash-core-components/tabs'
+githublink = 'https://github.com/austinlasseter/dash-multitab-simple
+
+# Inicializar la aplicación:
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
+app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+server = app.server
+app.title= "Valkiria"
+
 
 # Configurar aplicación
-app = dash.Dash(__name__)
 app.layout = html.Div([
     html.Div([
-        html.H2("Stock App"),
+        html.H2("Mi Aplicación"),
         html.Img(src="/assets/stock-icon.png")
     ], className="banner"),
 
@@ -38,9 +51,7 @@ app.layout = html.Div([
     ],className="row")
 ])
 
-app.css.append_css({
-    "external_url":"https://codepen.io/chriddyp/pen/bWLwgP.css"
-})
+
 
 # Definir callbacks:
 @app.callback(Output("graph_close")
