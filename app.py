@@ -18,7 +18,7 @@ lista_de_acciones = list(datos['Nemotecnico'].value_counts().sort_index().index)
 
 # Inicializar la aplicación:
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
+app = dash.Dash(__name__)
 server = app.server
 app.title= "Valkiria"
 
