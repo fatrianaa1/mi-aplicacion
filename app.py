@@ -45,6 +45,43 @@ app.layout = html.Div([
         ], 
         className = 'row flex-display'
     ),
+        html.Div(
+            [
+                html.Div(
+                    [
+                        html.Div(
+                            [
+                                html.Div(
+                                    [html.H6(id="well_text"), html.P("No. of Wells")],
+                                    id="wells",
+                                    className="mini_container",
+                                ),
+                                html.Div(
+                                    [html.H6(id="gasText"), html.P("Gas")],
+                                    id="gas",
+                                    className="mini_container",
+                                ),
+                                html.Div(
+                                    [html.H6(id="oilText"), html.P("Oil")],
+                                    id="oil",
+                                    className="mini_container",
+                                ),
+                                html.Div(
+                                    [html.H6(id="waterText"), html.P("Water")],
+                                    id="water",
+                                    className="mini_container",
+                                ),
+                            ],
+                            id="info-container",
+                            className="row container-display",
+                        ),
+                    ],
+                    id="right-column",
+                    className="eight columns",
+                ),
+            ],
+            className="row flex-display",
+        ),
     html.Br(),
     html.Div([dcc.Dropdown(
         id= "dropdown",
