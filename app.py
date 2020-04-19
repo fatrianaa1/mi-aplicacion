@@ -27,13 +27,13 @@ app.title= "Valkiria"
 # Configurar aplicación
 app.layout = html.Div([
     html.H3('Análisis técnico de acciones de la BVC'),
-    dcc.Dropdown(
+    html.Div([dcc.Dropdown(
         id= "dropdown",
         options=[{"label": i, "value": i} for i in lista_de_acciones],
         value= "ECOPETROL"
-    ),
+    )], className = 'three columns'),
     html.Br(),
-    html.Div([dcc.Graph(id='grafico_principal')], className = 'three columns')
+    dcc.Graph(id='grafico_principal')
 ])
 
 
