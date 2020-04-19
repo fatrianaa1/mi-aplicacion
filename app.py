@@ -30,17 +30,20 @@ app.layout = html.Div([
         [
             html.Div(
                 [
-                    html.H2(
-                        'Análisis técnico de acciones de la BVC', 
-                        style = {'margin-bottom': '0px'},
-                    ), 
-                    html.H5(
-                        'Otra cosa', style = {'margin-top':'0px'}
-                    ),
-                ]
-            )
+                    html.Div(
+                        [
+                            html.H2(
+                                'Análisis técnico de acciones de la BVC', style = {'margin-bottom': '0px'},
+                            ), 
+                            html.H5(
+                                'Otra cosa', style = {'margin-top':'0px'}
+                            ),
+                        ]
+                    )
+                ],
+                className = 'one-half column',),
         ], 
-        className = 'one-half column',
+        className = 'row flex-display'
     ),
     html.Br(),
     html.Div([dcc.Dropdown(
