@@ -42,6 +42,7 @@ app.layout = html.Div([
         ], 
         className = 'one-half column',
     ),
+    html.Br(),
     html.Div([dcc.Dropdown(
         id= "dropdown",
         options=[{"label": i, "value": i} for i in lista_de_acciones],
