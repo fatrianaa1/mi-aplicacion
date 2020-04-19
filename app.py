@@ -41,7 +41,7 @@ app.layout = html.Div([
             )
         ], 
         className = 'one-half column',
-    )
+    ),
     html.H3('Análisis técnico de acciones de la BVC'),
     html.Div([dcc.Dropdown(
         id= "dropdown",
