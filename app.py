@@ -90,7 +90,7 @@ def grafica_principal(accion_seleccionada):
     figura_principal = go.Figure(data = [el_grafico_principal])
     return figura_principal
 
-@app.callback(Output("la variación", "style"), 
+@app.callback(Output("la_variación", "style"), 
               [Input("dropdown", "value")])
 def color(accion_seleccionada):
     if accion_seleccionada == "ECOPETROL":
