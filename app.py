@@ -58,7 +58,7 @@ app.layout = html.Div([
             html.Div(
                 [
                     html.H4("Variación"), 
-                    html.H2("-3%"
+                    html.H2(id = "la_variación", children = ["-3%"]
                            )
                 ], 
                 className = "six columns"
@@ -89,6 +89,15 @@ def grafica_principal(accion_seleccionada):
                                           close = datos_seleccionados["Precio Cierre"])
     figura_principal = go.Figure(data = [el_grafico_principal])
     return figura_principal
+
+@app.callback(Output("la variación", "style"), 
+              [Input("dropdown", "value")])
+def color(accion_seleccionada):
+    if accion_seleccionada == "ECOPETROL":
+        mi_color = "red" 
+    else:
+        mi_color = "blue"
+    return {"color": mi_color}
 
 if __name__ == '__main__':
     app.run_server()
