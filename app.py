@@ -72,7 +72,7 @@ app.layout = html.Div([
         value= "ECOPETROL"
     )], className = 'three columns'),
     html.Br(),
-    dcc.Graph(id='grafico_principal')
+    html.Div([dcc.Graph(id='grafico_principal')], className = "eight columns")
 ])
 
 
