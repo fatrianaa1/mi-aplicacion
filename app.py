@@ -26,6 +26,7 @@ app.title= "Valkiria"
 
 # Configurar aplicación
 app.layout = html.Div([
+    html.Div([html.H2('Análisis técnico de acciones', style = {'margin-bottom': '0px'}), html.H5('Otra cosa', style = {'margin-top':'0px'})], className = 'one-half column')
     html.H3('Análisis técnico de acciones de la BVC'),
     html.Div([dcc.Dropdown(
         id= "dropdown",
