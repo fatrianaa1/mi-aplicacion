@@ -46,13 +46,25 @@ app.layout = html.Div([
         className = 'row flex-display'
     ),
     html.Div(
-        [html.Div([
-            html.H4("Capitalización bursátil"), 
-            html.H2("6 Billones")], className = "six columns"), 
-         html.Div([html.H4("Variación"), 
-                   html.H2("-3%")], className = "six columns")
+        [
+            html.Div(
+                [
+                    html.H4("Capitalización bursátil"), 
+                    html.H2("6 Billones"
+                           )
+                ], 
+                className = "six columns"
+            ), 
+            html.Div(
+                [
+                    html.H4("Variación"), 
+                    html.H2("-3%"
+                           )
+                ], 
+                className = "six columns"
+            )
         ], 
-        className = "twelve columns")
+        className = "twelve columns"),
     html.Br(),
     html.Div([dcc.Dropdown(
         id= "dropdown",
