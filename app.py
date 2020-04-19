@@ -31,7 +31,7 @@ app.layout = html.Div([
             html.Div(
                 [
                     html.H2(
-                        'Análisis técnico de acciones', 
+                        'Análisis técnico de acciones de la BVC', 
                         style = {'margin-bottom': '0px'},
                     ), 
                     html.H5(
@@ -42,7 +42,6 @@ app.layout = html.Div([
         ], 
         className = 'one-half column',
     ),
-    html.H3('Análisis técnico de acciones de la BVC'),
     html.Div([dcc.Dropdown(
         id= "dropdown",
         options=[{"label": i, "value": i} for i in lista_de_acciones],
