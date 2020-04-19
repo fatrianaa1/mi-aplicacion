@@ -17,7 +17,7 @@ lista_de_acciones = list(datos['Nemotecnico'].value_counts().sort_index().index)
 
 
 # Inicializar la aplicación:
-external_stylesheets = ['https://cdn.rawgit.com/plotly/dash-app-stylesheets/2d266c578d2a6e8850ebce48fdb52759b2aef506/stylesheet-oil-and-gas.css']
+external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
 app = dash.Dash(__name__, external_stylesheets = external_stylesheets)
 server = app.server
 app.title= "Valkiria"
@@ -45,43 +45,14 @@ app.layout = html.Div([
         ], 
         className = 'row flex-display'
     ),
-        html.Div(
-            [
-                html.Div(
-                    [
-                        html.Div(
-                            [
-                                html.Div(
-                                    [html.H6(id="well_text"), html.P("No. of Wells")],
-                                    id="wells",
-                                    className="mini_container",
-                                ),
-                                html.Div(
-                                    [html.H6(id="gasText"), html.P("Gas")],
-                                    id="gas",
-                                    className="mini_container",
-                                ),
-                                html.Div(
-                                    [html.H6(id="oilText"), html.P("Oil")],
-                                    id="oil",
-                                    className="mini_container",
-                                ),
-                                html.Div(
-                                    [html.H6(id="waterText"), html.P("Water")],
-                                    id="water",
-                                    className="mini_container",
-                                ),
-                            ],
-                            id="info-container",
-                            className="row container-display",
-                        ),
-                    ],
-                    id="right-column",
-                    className="eight columns",
-                ),
-            ],
-            className="row flex-display",
-        ),
+    html.Div(
+        [html.Div([
+            html.H4("Capitalización bursátil"), 
+            html.H2("6 Billones")], className = "six columns"), 
+         html.Div([html.H4("Variación"), 
+                   html.H2("-3%")], className = "six columns")
+        ], 
+        className = "twelve columns")
     html.Br(),
     html.Div([dcc.Dropdown(
         id= "dropdown",
