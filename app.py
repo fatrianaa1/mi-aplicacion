@@ -44,6 +44,7 @@ app.layout = html.Div([
         ], 
         className = 'row flex-display'
     ),
+    html.Div([html.H6(id="well_text"), html.P("No. of Wells")], id="wells", className="mini_container",),
     html.Div(
         [
             html.Div(
