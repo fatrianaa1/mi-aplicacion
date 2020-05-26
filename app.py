@@ -14,7 +14,14 @@ datos["Fecha"] = pd.to_datetime(datos["fecha"], format = "%d/%m/%Y %H:%M:%S")
 datos = datos[datos["Cantidad"] > 0]
 lista_de_acciones = list(datos['Nemotecnico'].value_counts().sort_index().index)
 
-
+# Definir funciones auxiliares:
+# Bandas de Bollinger:
+def bbands(price, window_size=10, num_of_std=5):
+    rolling_mean = price.rolling(window=window_size).mean()
+    rolling_std  = price.rolling(window=window_size).std()
+    upper_band = rolling_mean + (rolling_std*num_of_std)
+    lower_band = rolling_mean - (rolling_std*num_of_std)
+    return rolling_mean, upper_band, lower_band
 
 # Inicializar la aplicación:
 app = dash.Dash(__name__)
@@ -49,8 +56,8 @@ app.layout = html.Div([
                                 "Análisis técnico de acciones de la BVC",
                                 style={"margin-bottom": "0px"},
                             ),
-                            html.H5(
-                                "Otra cosa", style={"margin-top": "0px"}
+                            html.H6(
+                                "Escrito en Python por Fabián Triana", style={"margin-top": "0px"}
                             ),
                         ]
                     )
@@ -80,7 +87,8 @@ app.layout = html.Div([
                     html.Div(
                         [
                             html.Div(
-                                [html.H6(id="well_text"), html.P("No. of Wells")],
+                                [html.H6(id="well_text", children = ["-3%"]), 
+                                 html.P("Variación")],
                                 id="wells",
                                 className="mini_container",
                             ),
@@ -147,15 +155,60 @@ app.layout = html.Div([
               [Input('dropdown', 'value')])
 def grafica_principal(accion_seleccionada):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
-    el_grafico_principal = go.Candlestick(x = datos_seleccionados["Fecha"], 
-                                          open = datos_seleccionados["Precio Medio"], 
-                                          high = datos_seleccionados["Precio Mayor"],
-                                          low = datos_seleccionados["Precio Menor"], 
-                                          close = datos_seleccionados["Precio Cierre"])
-    figura_principal = go.Figure(data = [el_grafico_principal])
-    return figura_principal
+    datos_seleccionados = datos_seleccionados.set_index("Fecha")
+    
+    # Colores:
+    INCREASING_COLOR = '#17BECF'
+    DECREASING_COLOR = '#7F7F7F'
+    
+    # Candlestick:
+    data = [dict(
+        type = 'candlestick',
+        open = datos_seleccionados["Precio Medio"],
+        high = datos_seleccionados["Precio Mayor"],
+        low = datos_seleccionados["Precio Menor"],
+        close = datos_seleccionados["Precio Cierre"],
+        x = datos_seleccionados.index,
+        yaxis = 'y2',
+        name = accion_seleccionada,
+        increasing = dict(line = dict(color = INCREASING_COLOR)),
+        decreasing = dict(line = dict(color = DECREASING_COLOR)),
+    )]
+    
+    # Layout del gráfico:
+    layout=dict()
+    fig = dict(data=data, layout=layout)
+    fig['layout'] = dict()
+    fig['layout']['plot_bgcolor'] = 'rgb(250, 250, 250)'
+    fig['layout']['yaxis'] = dict( domain = [0, 0.2], showticklabels = False )
+    fig['layout']['yaxis2'] = dict( domain = [0.2, 0.8] )
+    fig['layout']['legend'] = dict( orientation = 'h', y=0.9, x=0.3, yanchor='bottom' )
+    fig['layout']['margin'] = dict( t=40, b=40, r=40, l=40 )
+    
+    # Definir los colores para las barras de volumen:
+    colors = []
+    for i in range(len(datos_seleccionados["Precio Cierre"])):
+        if i != 0:
+            if datos_seleccionados["Precio Cierre"][i] > datos_seleccionados["Precio Cierre"][i-1]:
+                colors.append(INCREASING_COLOR)
+            else:
+                colors.append(DECREASING_COLOR)
+        else:
+            colors.append(DECREASING_COLOR)
+    
+    # Añadir las barras de volumen: 
+    fig['data'].append(dict(x=datos_seleccionados.index, y=datos_seleccionados["Cantidad"],                         
+                            marker=dict( color=colors ),
+                            type='bar', yaxis='y', name='Cantidad transada'))
+    
+    # Crear el gráfico principal:
+    el_grafico_principal = go.Figure(fig)
+    el_grafico_principal.update_layout(xaxis_rangeslider_visible=False)
 
-@app.callback(Output("la_variación", "style"), 
+    # Devolver el gráfico principal:
+    return el_grafico_principal
+
+@app.callback(Output("well_text", "style"), 
               [Input("dropdown", "value")])
 def color(accion_seleccionada):
     if accion_seleccionada == "ECOPETROL":
