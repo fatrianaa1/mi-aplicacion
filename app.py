@@ -88,23 +88,23 @@ app.layout = html.Div([
                     html.Div(
                         [
                             html.Div(
-                                [html.H6(id="well_text", children = ["-3%"]), 
+                                [html.H4(id="well_text", children = ["-3%"]), 
                                  html.P("Variación")],
                                 id="wells",
                                 className="mini_container",
                             ),
                             html.Div(
-                                [html.H6(id="gasText"), html.P("Gas")],
+                                [html.H4(id="gasText"), html.P("Gas")],
                                 id="gas",
                                 className="mini_container",
                             ),
                             html.Div(
-                                [html.H6(id="oilText"), html.P("Oil")],
+                                [html.H4(id="oilText"), html.P("Oil")],
                                 id="oil",
                                 className="mini_container",
                             ),
                             html.Div(
-                                [html.H6(id="waterText"), html.P("Water")],
+                                [html.H4(id="waterText"), html.P("Water")],
                                 id="water",
                                 className="mini_container",
                             ),
@@ -133,6 +133,7 @@ app.layout = html.Div([
 
 # Definir callbacks:
 
+# Actualizar gráfico principal con la acción seleccionada:
 @app.callback(Output('grafico_principal', 'figure'),
               [Input('dropdown', 'value')])
 def grafica_principal(accion_seleccionada):
@@ -190,6 +191,8 @@ def grafica_principal(accion_seleccionada):
     # Devolver el gráfico principal:
     return el_grafico_principal
 
+# Actualizar color de la variación de acuerdo a última variación
+# de la acción seleccionada:
 @app.callback(Output("well_text", "style"), 
               [Input("dropdown", "value")])
 def color(accion_seleccionada):
@@ -205,6 +208,15 @@ def color(accion_seleccionada):
         mi_color = "darkblue"
     return {"color": mi_color}
             
+
+@app.callback(Output("well_text", "children"), 
+              [Input("dropdown", "value")])
+def texto_variacion(accion_seleccionada):
+    datos_seleccionados = datos[datos["Nemotecnico"] == accion_seleccionada]
+    fecha_mas_reciente = datos_seleccionados["Fecha"].max()
+    datos_mas_recientes = datos_seleccionados[datos_seleccionados["Fecha"] == fecha_mas_reciente]
+    ultima_variacion = datos_mas_recientes["Variación"].values[0]
+    return ultima_variacion
 
 if __name__ == '__main__':
     app.run_server()
