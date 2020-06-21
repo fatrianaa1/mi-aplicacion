@@ -200,14 +200,15 @@ def color(accion_seleccionada):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
     fecha_mas_reciente = datos_seleccionados["Fecha"].max()
     datos_mas_recientes = datos_seleccionados[datos_seleccionados["Fecha"] == fecha_mas_reciente]
-    ultima_variacion = float(datos_mas_recientes["Variacion"].values[0].strip("%"))
-    if ultima_variacion > 0:
+    ultima_variacion = datos_mas_recientes["Variacion"].values[0]
+    ultima_variacion_en_numero = float(ultima_variacion.strip("%"))
+    if ultima_variacion_en_numero > 0:
         mi_color = "green"
-    elif ultima_variacion < 0:
+    elif ultima_variacion_en_numero < 0:
         mi_color = "red"
     else:
         mi_color = "darkblue"
-    return {"color": mi_color}, "Xjas"
+    return {"color": mi_color}, ultima_variacion
 
 
 if __name__ == '__main__':
