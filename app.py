@@ -88,7 +88,7 @@ app.layout = html.Div([
                     html.Div(
                         [
                             html.Div(
-                                [html.H6(id="well_text"), 
+                                [html.H6(id="well_text", children = ["bla"]), 
                                  html.P("Variación")],
                                 id="wells",
                                 className="mini_container",
