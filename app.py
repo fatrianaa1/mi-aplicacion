@@ -119,26 +119,6 @@ app.layout = html.Div([
         ],
         className="row flex-display",
     ),
-    html.Div(
-        [
-            html.Div(
-                [
-                    html.H4("Capitalización bursátil"), 
-                    html.H2("6 Billones"
-                           )
-                ], 
-                className = "six columns"
-            ), 
-            html.Div(
-                [
-                    html.H4("Variación"), 
-                    html.H2(id = "la_variación", children = ["-3%"]
-                           )
-                ], 
-                className = "six columns"
-            )
-        ], 
-        className = "twelve columns"),
     html.Br(),
     html.Div([dcc.Dropdown(
         id= "dropdown",
@@ -152,6 +132,7 @@ app.layout = html.Div([
 
 
 # Definir callbacks:
+
 @app.callback(Output('grafico_principal', 'figure'),
               [Input('dropdown', 'value')])
 def grafica_principal(accion_seleccionada):
@@ -212,11 +193,18 @@ def grafica_principal(accion_seleccionada):
 @app.callback(Output("well_text", "style"), 
               [Input("dropdown", "value")])
 def color(accion_seleccionada):
-    if accion_seleccionada == "ECOPETROL":
-        mi_color = "red" 
+    datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
+    fecha_mas_reciente = datos_seleccionados["Fecha"].max()
+    datos_mas_recientes = datos_seleccionados[datos_seleccionados["Fecha"] == fecha_mas_reciente]
+    ultima_variacion = float(datos_mas_recientes["Variacion"].values[0].strip("%"))
+    if ultima_variacion > 0:
+        mi_color = "green"
+    elif ultima_variacion < 0:
+        mi_color = "red"
     else:
-        mi_color = "blue"
+        mi_color = "darkblue"
     return {"color": mi_color}
+            
 
 if __name__ == '__main__':
     app.run_server()
