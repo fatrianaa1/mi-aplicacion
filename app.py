@@ -9,10 +9,11 @@ import numpy as np
 
 
 # Definir tabla de datos:
-datos = pd.read_csv("https://gist.githubusercontent.com/fatrianaa1/76c832481a4fdb2e3683c2b232b5476f/raw/data_acciones.csv", delimiter = "\t")
-datos["Fecha"] = pd.to_datetime(datos["fecha"], format = "%d/%m/%Y %H:%M:%S")
+datos = pd.read_csv("https://gist.githubusercontent.com/fatrianaa1/76c832481a4fdb2e3683c2b232b5476f/raw/data_acciones.csv", 
+                    delimiter = "\t")
+datos["Fecha"] = pd.to_datetime(datos["Fecha"])
 datos = datos[datos["Cantidad"] > 0]
-lista_de_acciones = list(datos['Nemotecnico'].value_counts().sort_index().index)
+lista_de_acciones = sorted(list(datos["Nemotecnico"].unique()))
 
 # Definir funciones auxiliares:
 # Bandas de Bollinger:
@@ -164,10 +165,10 @@ def grafica_principal(accion_seleccionada):
     # Candlestick:
     data = [dict(
         type = 'candlestick',
-        open = datos_seleccionados["Precio Medio"],
-        high = datos_seleccionados["Precio Mayor"],
-        low = datos_seleccionados["Precio Menor"],
-        close = datos_seleccionados["Precio Cierre"],
+        open = datos_seleccionados["Apertura"],
+        high = datos_seleccionados["Alto"],
+        low = datos_seleccionados["Bajo"],
+        close = datos_seleccionados["Cierre"],
         x = datos_seleccionados.index,
         yaxis = 'y2',
         name = accion_seleccionada,
@@ -187,9 +188,9 @@ def grafica_principal(accion_seleccionada):
     
     # Definir los colores para las barras de volumen:
     colors = []
-    for i in range(len(datos_seleccionados["Precio Cierre"])):
+    for i in range(len(datos_seleccionados["Cierre"])):
         if i != 0:
-            if datos_seleccionados["Precio Cierre"][i] > datos_seleccionados["Precio Cierre"][i-1]:
+            if datos_seleccionados["Cierre"][i] > datos_seleccionados["Cierre"][i-1]:
                 colors.append(INCREASING_COLOR)
             else:
                 colors.append(DECREASING_COLOR)
