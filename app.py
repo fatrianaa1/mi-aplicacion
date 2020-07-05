@@ -119,7 +119,7 @@ app.layout = html.Div([
                     ),
                 ],
                 id="right-column",
-                className="eight columns",
+                className="ten columns",
             ),
         ],
         className="row flex-display",
