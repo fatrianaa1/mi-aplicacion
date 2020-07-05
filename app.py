@@ -5,6 +5,7 @@ from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
+import cufflinks as cf
 
 
 
@@ -140,53 +141,23 @@ def grafica_principal(accion_seleccionada):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
     datos_seleccionados = datos_seleccionados.set_index("Fecha")
     
-    # Colores:
-    INCREASING_COLOR = '#17BECF'
-    DECREASING_COLOR = '#7F7F7F'
+    # Gráfico elaborado con Cufflinks:
+    grafico = cf.QuantFig(datos, name = accion_seleccionada)
     
-    # Candlestick:
-    data = [dict(
-        type = 'candlestick',
-        open = datos_seleccionados["Apertura"],
-        high = datos_seleccionados["Alto"],
-        low = datos_seleccionados["Bajo"],
-        close = datos_seleccionados["Cierre"],
-        x = datos_seleccionados.index,
-        yaxis = 'y2',
-        name = accion_seleccionada,
-        increasing = dict(line = dict(color = INCREASING_COLOR)),
-        decreasing = dict(line = dict(color = DECREASING_COLOR)),
-    )]
+    # Definir colores personalizados con atributo ".theme":
+    grafico.theme = {'theme': 'pearl', 'up_color': '#17BECF', 'down_color': 'red'}
     
-    # Layout del gráfico:
-    layout=dict()
-    fig = dict(data=data, layout=layout)
-    fig['layout'] = dict()
-    fig['layout']['plot_bgcolor'] = 'rgb(250, 250, 250)'
-    fig['layout']['yaxis'] = dict( domain = [0, 0.2], showticklabels = False )
-    fig['layout']['yaxis2'] = dict( domain = [0.2, 0.8] )
-    fig['layout']['legend'] = dict( orientation = 'h', y=0.9, x=0.3, yanchor='bottom' )
-    fig['layout']['margin'] = dict( t=40, b=40, r=40, l=40 )
+    # Modificar el atributo "._d" de modo que trabaje con los nombres de
+    # las columnas del dataframe y entienda a qué se refiere cada una:
+    grafico._d = {'open': 'Apertura', 'high': 'Alto', 'low': 'Bajo', 'close': 'Cierre'}
     
-    # Definir los colores para las barras de volumen:
-    colors = []
-    for i in range(len(datos_seleccionados["Cierre"])):
-        if i != 0:
-            if datos_seleccionados["Cierre"][i] > datos_seleccionados["Cierre"][i-1]:
-                colors.append(INCREASING_COLOR)
-            else:
-                colors.append(DECREASING_COLOR)
-        else:
-            colors.append(DECREASING_COLOR)
+    # Añadir los estudios técnicos:
+    grafico.add_volume(column = "Cantidad")
+    grafico.add_bollinger_bands(periods = 5)
     
-    # Añadir las barras de volumen: 
-    fig['data'].append(dict(x=datos_seleccionados.index, y=datos_seleccionados["Cantidad"],                         
-                            marker=dict( color=colors ),
-                            type='bar', yaxis='y', name='Cantidad transada'))
-    
-    # Crear el gráfico principal:
-    el_grafico_principal = go.Figure(fig)
-    el_grafico_principal.update_layout(xaxis_rangeslider_visible=False)
+    # Crear el gráfico principal como figura plotly:
+    el_grafico_principal = grafico.figure()
+    # el_grafico_principal.update_layout(xaxis_rangeslider_visible=False)
 
     # Devolver el gráfico principal:
     return el_grafico_principal
