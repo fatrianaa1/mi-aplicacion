@@ -111,7 +111,7 @@ app.layout = html.Div([
                             ),
                             html.Div(
                                 [html.H4(id="otroText"), html.P("Otra vaina")],
-                                id="other",
+                                id="sector",
                                 className="mini_container",)
                         ],
                         id="info-container",
