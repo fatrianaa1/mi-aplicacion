@@ -109,6 +109,10 @@ app.layout = html.Div([
                                 id="water",
                                 className="mini_container",
                             ),
+                            html.Div(
+                                [html.H4(id="otroText"), html.P("Otra vaina")],
+                                id="other",
+                                className="mini_container",)
                         ],
                         id="info-container",
                         className="row container-display",
