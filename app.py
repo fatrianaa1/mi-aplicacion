@@ -16,6 +16,8 @@ datos["Fecha"] = pd.to_datetime(datos["Fecha"])
 datos = datos[datos["Cantidad"] > 0]
 lista_de_acciones = sorted(list(datos["Nemotecnico"].unique()))
 
+lista_indicadores = ["Bollinger", "MACD"] 
+
 # Definir funciones auxiliares:
 # Bandas de Bollinger:
 def bbands(price, window_size=10, num_of_std=5):
@@ -127,8 +129,11 @@ app.layout = html.Div([
     html.Div([dcc.Dropdown(
         id= "dropdown",
         options=[{"label": i, "value": i} for i in lista_de_acciones],
-        value= "ECOPETROL"
-    )], className = 'three columns'),
+        value= "ECOPETROL"), 
+              dcc.Dropdown(
+                  id = "second_dropdown", 
+                  options =[{"label": i, "value": i} for i in lista_indicadores])], 
+             className = 'four columns'),
     html.Br(),
     html.Div([dcc.Graph(id='grafico_principal')], className = "eight columns")
 ])
