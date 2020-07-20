@@ -194,8 +194,8 @@ def grafica_principal(accion_seleccionada):
 # de la acción seleccionada:
 @app.callback([Output("well_text", "style"), 
                Output("well_text", "children"), 
-               Output("gasText", "children")],
-               Output("TextoSector", "children")              
+               Output("gasText", "children"),
+               Output("TextoSector", "children")],              
               [Input("dropdown", "value")])
 def color(accion_seleccionada):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
