@@ -43,7 +43,8 @@ sectores = {"BCOLOMBIA": "Financiero",
             "PFGRUPOARG": "Holdings", 
             "PFGRUPSURA": "Holdings"}
 
-lista_indicadores = ["Bollinger Bands", "MACD"] 
+lista_indicadores_superiores = ["Bollinger Bands", "EMA", "Parabolic SAR"]
+lista_indicadores_inferiores = ["MACD", "RSI"]
 
 
 # Inicializar la aplicación:
@@ -151,10 +152,15 @@ app.layout = html.Div([
         options=[{"label": i, "value": i} for i in lista_de_acciones],
         value= "ECOPETROL"),
               html.Br(),
-              html.P("Seleccione un indicador:", className="control_label"),
+              html.P("Seleccione indicadores superiores:", className="control_label"),
               dcc.Checklist(
-                  id = "checklist", 
-                  options =[{"label": i, "value": i} for i in lista_indicadores])], 
+                  id = "checklist_superiores", 
+                  options =[{"label": i, "value": i} for i in lista_indicadores_superiores]),
+              html.Br(),
+              html.P("Seleccione indicadores inferiores:", className = "control_label"), 
+              dcc.Checklist(
+                  id = "ckecklist_inferiores", 
+                  options = [{"label":i, "value": i} for i in lista_indicadores_inferiores])], 
              className = 'four columns'),
     html.Br(),
     html.Div([dcc.Graph(id='grafico_principal')], className = "eight columns")
@@ -167,8 +173,9 @@ app.layout = html.Div([
 # Actualizar gráfico principal con la acción seleccionada:
 @app.callback(Output('grafico_principal', 'figure'),
               [Input('dropdown', 'value'), 
-               Input('checklist', 'value')])
-def grafica_principal(accion_seleccionada, indicadores_seleccionados):
+               Input('checklist_superiores', 'value'), 
+               Input('checklist_inferiores', 'value')])
+def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados, indicadores_inferiores_seleccionados):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
     datos_seleccionados = datos_seleccionados.set_index("Fecha")
     
@@ -176,17 +183,19 @@ def grafica_principal(accion_seleccionada, indicadores_seleccionados):
     grafico = cf.QuantFig(datos_seleccionados, name = accion_seleccionada)
     
     # Definir colores personalizados con atributo ".theme":
-    grafico.theme = {'theme': 'pearl', 'up_color': '#17BECF', 'down_color': 'red'}
+    grafico.theme = {'theme': 'pearl', 'up_color': '#008000', 'down_color': '#e32636'}
     
     # Modificar el atributo "._d" de modo que trabaje con los nombres de
     # las columnas del dataframe y entienda a qué se refiere cada una:
     grafico._d = {'open': 'Apertura', 'high': 'Alto', 'low': 'Bajo', 'close': 'Cierre'}
     
-    # Añadir los estudios técnicos:
+    # Añadir los estudios técnicos superiores:
     grafico.add_volume(column = "Cantidad")
-    if "Bollinger Bands" in indicadores_seleccionados: 
+    if "Bollinger Bands" in indicadores_superiores_seleccionados: 
         grafico.add_bollinger_bands(periods = 5)
-    if "MACD" in indicadores_seleccionados:
+    
+    # Añadir los estudios técnicos inferiores:
+    if "MACD" in indicadores_inferiores_seleccionados:
         grafico.add_macd()
     
     # Crear el gráfico principal como figura plotly:
