@@ -16,16 +16,35 @@ datos["Fecha"] = pd.to_datetime(datos["Fecha"])
 datos = datos[datos["Cantidad"] > 0]
 lista_de_acciones = sorted(list(datos["Nemotecnico"].unique()))
 
+
+# Definición de sectores:
+sectores = {"BCOLOMBIA": "Financiero", 
+            "BOGOTA": "Financiero", 
+            "BVC": "Financiero", 
+            "CELSIA": "Energía", 
+            "CEMARGOS": "Industrial", 
+            "CLH": "Industrial", 
+            "CNEC": "Petróleo", 
+            "CONCONCRET": "Construcción", 
+            "CORFICOLCF": "Holdings", 
+            "ECOPETROL": "Petróleo", 
+            "ETB": "Telecomunicaciones", 
+            "EXITO": "Retail", 
+            "GEB": "Energía", 
+            "GRUPOARGOS": "Holdings", 
+            "GRUPOAVAL": "Holdings", 
+            "GRUPOSURA": "Holdings", 
+            "ISA": "Energía", 
+            "NUTRESA": "Alimentos", 
+            "PFAVAL": "Holdings", 
+            "PFBCOLOM": "Financiero", 
+            "PFCEMARGOS": "Industrial", 
+            "PFDAVVNDA": "Financiero", 
+            "PFGRUPOARG": "Holdings", 
+            "PFGRUPSURA": "Holdings"}
+
 lista_indicadores = ["Bollinger", "MACD"] 
 
-# Definir funciones auxiliares:
-# Bandas de Bollinger:
-def bbands(price, window_size=10, num_of_std=5):
-    rolling_mean = price.rolling(window=window_size).mean()
-    rolling_std  = price.rolling(window=window_size).std()
-    upper_band = rolling_mean + (rolling_std*num_of_std)
-    lower_band = rolling_mean - (rolling_std*num_of_std)
-    return rolling_mean, upper_band, lower_band
 
 # Inicializar la aplicación:
 app = dash.Dash(__name__)
@@ -126,7 +145,8 @@ app.layout = html.Div([
         className="row flex-display",
     ),
     html.Br(),
-    html.Div([dcc.Dropdown(
+    html.Div([html.P("Seleccione una acción:", className="control_label"),
+        dcc.Dropdown(
         id= "dropdown",
         options=[{"label": i, "value": i} for i in lista_de_acciones],
         value= "ECOPETROL"), 
@@ -174,12 +194,14 @@ def grafica_principal(accion_seleccionada):
 # de la acción seleccionada:
 @app.callback([Output("well_text", "style"), 
                Output("well_text", "children"), 
-               Output("gasText", "children")], 
+               Output("gasText", "children")],
+               Output("TextoSector", "children")              
               [Input("dropdown", "value")])
 def color(accion_seleccionada):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
     fecha_mas_reciente = datos_seleccionados["Fecha"].max()
     datos_mas_recientes = datos_seleccionados[datos_seleccionados["Fecha"] == fecha_mas_reciente]
+    el_sector = sectores[accion_seleccionada]
     ultimo_precio = datos_mas_recientes["Cierre"].values[0]
     ultima_variacion = datos_mas_recientes["Variacion"].values[0]
     ultima_variacion_en_numero = float(ultima_variacion.strip("%"))
@@ -189,7 +211,7 @@ def color(accion_seleccionada):
         mi_color = "red"
     else:
         mi_color = "darkblue"
-    return {"color": mi_color}, ultima_variacion, ultimo_precio
+    return {"color": mi_color}, ultima_variacion, ultimo_precio, el_sector
 
 
 if __name__ == '__main__':
