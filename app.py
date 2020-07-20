@@ -43,7 +43,7 @@ sectores = {"BCOLOMBIA": "Financiero",
             "PFGRUPOARG": "Holdings", 
             "PFGRUPSURA": "Holdings"}
 
-lista_indicadores = ["Bollinger", "MACD"] 
+lista_indicadores = ["Bollinger Bands", "MACD"] 
 
 
 # Inicializar la aplicación:
@@ -149,9 +149,11 @@ app.layout = html.Div([
         dcc.Dropdown(
         id= "dropdown",
         options=[{"label": i, "value": i} for i in lista_de_acciones],
-        value= "ECOPETROL"), 
-              dcc.Dropdown(
-                  id = "second_dropdown", 
+        value= "ECOPETROL"),
+              html.Br(),
+              html.P("Seleccione un indicador:", className="control_label"),
+              dcc.Checklist(
+                  id = "checklist", 
                   options =[{"label": i, "value": i} for i in lista_indicadores])], 
              className = 'four columns'),
     html.Br(),
@@ -164,8 +166,9 @@ app.layout = html.Div([
 
 # Actualizar gráfico principal con la acción seleccionada:
 @app.callback(Output('grafico_principal', 'figure'),
-              [Input('dropdown', 'value')])
-def grafica_principal(accion_seleccionada):
+              [Input('dropdown', 'value'), 
+               Input('checklist', 'value')])
+def grafica_principal(accion_seleccionada, indicadores_seleccionados):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
     datos_seleccionados = datos_seleccionados.set_index("Fecha")
     
@@ -181,7 +184,10 @@ def grafica_principal(accion_seleccionada):
     
     # Añadir los estudios técnicos:
     grafico.add_volume(column = "Cantidad")
-    grafico.add_bollinger_bands(periods = 5)
+    if "Bollinger Bands" in indicadores_seleccionados: 
+        grafico.add_bollinger_bands(periods = 5)
+    if "MACD" in indicadores_seleccionados:
+        grafico.add_macd()
     
     # Crear el gráfico principal como figura plotly:
     el_grafico_principal = grafico.figure()
@@ -202,7 +208,7 @@ def color(accion_seleccionada):
     fecha_mas_reciente = datos_seleccionados["Fecha"].max()
     datos_mas_recientes = datos_seleccionados[datos_seleccionados["Fecha"] == fecha_mas_reciente]
     el_sector = sectores[accion_seleccionada]
-    ultimo_precio = datos_mas_recientes["Cierre"].values[0]
+    ultimo_precio = "$"+str(datos_mas_recientes["Cierre"].values[0])
     ultima_variacion = datos_mas_recientes["Variacion"].values[0]
     ultima_variacion_en_numero = float(ultima_variacion.strip("%"))
     if ultima_variacion_en_numero > 0:
