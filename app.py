@@ -177,7 +177,7 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados)
     grafico = cf.QuantFig(datos_seleccionados, name = accion_seleccionada)
     
     # Definir colores personalizados con atributo ".theme":
-    grafico.theme = {'theme': 'pearl', 'up_color': '#17BECF', 'down_color': 'red'}
+    grafico.theme = {'theme': 'pearl', 'up_color': '#17BECF', 'down_color': '#008000'}
     
     # Modificar el atributo "._d" de modo que trabaje con los nombres de
     # las columnas del dataframe y entienda a qué se refiere cada una:
