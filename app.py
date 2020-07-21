@@ -156,7 +156,10 @@ app.layout = html.Div([
               dcc.Checklist(
                   id = "checklist_superiores", 
                   options =[{"label": i, "value": i} for i in lista_indicadores_superiores]), 
-              html.P("Seleccione indicadores inferiores:", className="control_label")], 
+              html.P("Seleccione indicadores inferiores:", className="control_label"), 
+              dcc.Checklist(
+                  id= "checklist_inferiores", 
+                  options = [{"label": i, "value": i} for i in lista_indicadores_inferiores])], 
              className = 'four columns'),
     html.Br(),
     html.Div([dcc.Graph(id='grafico_principal')], className = "eight columns")
@@ -169,8 +172,9 @@ app.layout = html.Div([
 # Actualizar gráfico principal con la acción seleccionada:
 @app.callback(Output('grafico_principal', 'figure'),
               [Input('dropdown', 'value'), 
-               Input('checklist_superiores', 'value')])
-def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados):
+               Input('checklist_superiores', 'value'), 
+               Input('checklist_inferiores', 'value')])
+def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados, indicadores_inferiores_seleccionados):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
     datos_seleccionados = datos_seleccionados.set_index("Fecha")
     
@@ -186,12 +190,12 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados)
     
     # Añadir los estudios técnicos superiores:
     grafico.add_volume(column = "Cantidad")
-    #if "Bollinger Bands" in indicadores_superiores_seleccionados: 
-        #grafico.add_bollinger_bands(periods = 5)
+    if "Bollinger Bands" in indicadores_superiores_seleccionados: 
+        grafico.add_bollinger_bands(periods = 5)
     
     # Añadir los estudios técnicos inferiores:
-    #if "MACD" in indicadores_inferiores_seleccionados:
-        #grafico.add_macd()
+    if "MACD" in indicadores_inferiores_seleccionados:
+        grafico.add_macd()
     
     # Crear el gráfico principal como figura plotly:
     el_grafico_principal = grafico.figure()
