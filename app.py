@@ -192,18 +192,18 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
     grafico.add_volume(column = "Cantidad")
     
     # Variable ficticia:
-    a = 0
+    #a = 0
     
-    if "Bollinger Bands" in indicadores_superiores_seleccionados: 
-        grafico.add_bollinger_bands(periods = 5)
-    else:
-        a = 1
+    #if "Bollinger Bands" in indicadores_superiores_seleccionados: 
+        #grafico.add_bollinger_bands(periods = 5)
+    #else:
+        #a = 1
     
     # Añadir los estudios técnicos inferiores:
-    if "MACD" in indicadores_inferiores_seleccionados:
-        grafico.add_macd()
-    else:
-        a = 1
+    #if "MACD" in indicadores_inferiores_seleccionados:
+        #grafico.add_macd()
+    #else:
+        #a = 1
     
     # Crear el gráfico principal como figura plotly:
     el_grafico_principal = grafico.figure()
