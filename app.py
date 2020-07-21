@@ -155,11 +155,13 @@ app.layout = html.Div([
               html.P("Seleccione indicadores superiores:", className="control_label"),
               dcc.Checklist(
                   id = "checklist_superiores", 
-                  options =[{"label": i, "value": i} for i in lista_indicadores_superiores]), 
+                  options =[{"label": i, "value": i} for i in lista_indicadores_superiores], 
+                  value = ["Bollinger Bands"]), 
               html.P("Seleccione indicadores inferiores:", className="control_label"), 
               dcc.Checklist(
                   id= "checklist_inferiores", 
-                  options = [{"label": i, "value": i} for i in lista_indicadores_inferiores])], 
+                  options = [{"label": i, "value": i} for i in lista_indicadores_inferiores], 
+                  value = ["MACD"])], 
              className = 'four columns'),
     html.Br(),
     html.Div([dcc.Graph(id='grafico_principal')], className = "eight columns")
@@ -200,10 +202,10 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
         a = 1
     
     # Añadir los estudios técnicos inferiores:
-    #if "MACD" in indicadores_inferiores_seleccionados:
-        #grafico.add_macd()
-    #else:
-        #a = 1
+    if "MACD" in indicadores_inferiores_seleccionados:
+        grafico.add_macd()
+    else:
+        a = 1
     
     # Crear el gráfico principal como figura plotly:
     el_grafico_principal = grafico.figure()
