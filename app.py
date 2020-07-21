@@ -155,7 +155,8 @@ app.layout = html.Div([
               html.P("Seleccione indicadores superiores:", className="control_label"),
               dcc.Checklist(
                   id = "checklist_superiores", 
-                  options =[{"label": i, "value": i} for i in lista_indicadores_superiores])], 
+                  options =[{"label": i, "value": i} for i in lista_indicadores_superiores]), 
+              html.P("Seleccione indicadores inferiores:", className="control_label")], 
              className = 'four columns'),
     html.Br(),
     html.Div([dcc.Graph(id='grafico_principal')], className = "eight columns")
@@ -177,7 +178,7 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados)
     grafico = cf.QuantFig(datos_seleccionados, name = accion_seleccionada)
     
     # Definir colores personalizados con atributo ".theme":
-    grafico.theme = {'theme': 'pearl', 'up_color': '#a4c639', 'down_color': '#a52a2a'}
+    grafico.theme = {'theme': 'pearl', 'up_color': '#008000', 'down_color': '#a52a2a'}
     
     # Modificar el atributo "._d" de modo que trabaje con los nombres de
     # las columnas del dataframe y entienda a qué se refiere cada una:
