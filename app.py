@@ -43,6 +43,34 @@ sectores = {"BCOLOMBIA": "Financiero",
             "PFGRUPOARG": "Holdings", 
             "PFGRUPSURA": "Holdings"}
 
+# Información de dividendo anual para cálcuo de Yield:
+dividendos = {"BCOLOMBIA": 1638, 
+              "BOGOTA": 4032, 
+              "BVC": 418, 
+              "CELSIA": 292, 
+              "CEMARGOS": 251, 
+              "CLH": 0, 
+              "CNEC": 0, 
+              "CONCONCRET": 0, 
+              "CORFICOLCF": 2640, 
+              "ECOPETROL": 180, 
+              "ETB": 0, 
+              "EXITO": 2438, 
+              "GEB": 140, 
+              "GRUPOARGOS": 376, 
+              "GRUPOAVAL": 60, 
+              "GRUPOSURA": 634, 
+              "ISA": 675, 
+              "NUTRESA": 649, 
+              "PFAVAL": 60, 
+              "PFBCOLOM": 1638, 
+              "PFCEMARGOS": 251, 
+              "PFDAVVNDA": 926, 
+              "PFGRUPOARG": 376, 
+              "PFGRUPSURA": 634}
+
+
+# Lista de indicdores técnicos:
 lista_indicadores_superiores = ["Bollinger Bands", "EMA", "Parabolic SAR"]
 lista_indicadores_inferiores = ["MACD", "RSI"]
 
@@ -231,11 +259,13 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
     # Devolver el gráfico principal:
     return el_grafico_principal
 
-# Actualizar color de la variación de acuerdo a última variación
+# Actualizar color de la variación de acuerdo a última variación, 
+# del último precio, del sector y del yield
 # de la acción seleccionada:
 @app.callback([Output("well_text", "style"), 
                Output("well_text", "children"), 
                Output("gasText", "children"),
+               Output("waterText", "children"),
                Output("TextoSector", "children")],              
               [Input("dropdown", "value")])
 def color(accion_seleccionada):
@@ -243,7 +273,9 @@ def color(accion_seleccionada):
     fecha_mas_reciente = datos_seleccionados["Fecha"].max()
     datos_mas_recientes = datos_seleccionados[datos_seleccionados["Fecha"] == fecha_mas_reciente]
     el_sector = sectores[accion_seleccionada]
-    ultimo_precio = "$"+str(datos_mas_recientes["Cierre"].values[0])
+    ultimo_precio = datos_mas_recientes["Cierre"].values[0]
+    el_yield = dividendos[accion_seleccionada]/ultimo_precio
+    ultimo_precio = "$"+str(ultimo_precio)
     ultima_variacion = datos_mas_recientes["Variacion"].values[0]
     ultima_variacion_en_numero = float(ultima_variacion.strip("%"))
     if ultima_variacion_en_numero > 0:
@@ -252,7 +284,7 @@ def color(accion_seleccionada):
         mi_color = "red"
     else:
         mi_color = "darkblue"
-    return {"color": mi_color}, ultima_variacion, ultimo_precio, el_sector
+    return {"color": mi_color}, ultima_variacion, ultimo_precio, el_yield, el_sector
 
 
 if __name__ == '__main__':
