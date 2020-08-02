@@ -190,20 +190,37 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
     # las columnas del dataframe y entienda a qué se refiere cada una:
     grafico._d = {'open': 'Apertura', 'high': 'Alto', 'low': 'Bajo', 'close': 'Cierre'}
     
-    # Añadir los estudios técnicos superiores:
+    # Añadir volumen:
     grafico.add_volume(column = "Cantidad")
     
     # Variable ficticia:
     a = 0
     
+    # Añadir los estudios técnicos superiores:
+
     if "Bollinger Bands" in indicadores_superiores_seleccionados: 
         grafico.add_bollinger_bands(periods = 5)
     else:
         a = 1
     
+    if "EMA" in indicadores_superiores_seleccionados:
+        grafico.add_ema()
+    else:
+        a = 1
+        
+    if "Parabolic SAR" in indicadores_superiores_seleccionados:
+        grafico.add_ptps()
+    else:
+        a = 1
+
     # Añadir los estudios técnicos inferiores:
     if "MACD" in indicadores_inferiores_seleccionados:
         grafico.add_macd()
+    else:
+        a = 1
+        
+    if "RSI" in indicadores_inferiores_seleccionados:
+        grafico.add_rsi()
     else:
         a = 1
     
