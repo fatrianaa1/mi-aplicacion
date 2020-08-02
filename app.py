@@ -69,6 +69,43 @@ dividendos = {"BCOLOMBIA": 1638,
               "PFGRUPOARG": 376, 
               "PFGRUPSURA": 634}
 
+# Acciones en circulación para cálculo de capitalización:
+# PFDAVIVIENDA corresponde a la SUMA del número de acciones preferenciales Y ORDINARIAS
+# CORFICOLCF corresponde a la SUMA del número de acciones preferenciales y ordinarias
+
+numero_acciones = {"BCOLOMBIA": 509704584, 
+                   "BOGOTA": 331280555, 
+                   "BVC": 60513469, 
+                   "CELSIA": 1069972554, 
+                   "CEMARGOS": 1151672310, 
+                   "CLH": 578278342, 
+                   "CNEC": 177623000, 
+                   "CONCONCRET": 1134254939, 
+                   "CORFICOLCF": 324011008, 
+                   "ECOPETROL": 41116694690, 
+                   "ETB": 3550553412, 
+                   "EXITO": 447604316, 
+                   "GEB": 9181177017, 
+                   "GRUPOARGOS": 645400000, 
+                   "GRUPOAVAL": 15137789974, 
+                   "GRUPOSURA": 469037260, 
+                   "ISA": 1107677894, 
+                   "NUTRESA": 460123458, 
+                   "PFAVAL": 7143227185, 
+                   "PFBCOLOM": 452122416, 
+                   "PFCEMARGOS": 209197850, 
+                   "PFDAVVNDA": 451670413, 
+                   "PFGRUPOARG": 211827180, 
+                   "PFGRUPSURA": 112940288} 
+
+# Especificar qué empresas tienen acciones ordinarias
+# y acciones preferenciales para calcular la capitalización
+# con los precios de ambas especies:
+acciones_preferenciales_y_ordinarias = ["BCOLOMBIA", "PFBCOLOM", 
+                                        "CEMARGOS", "PFCEMARGOS", 
+                                        "GRUPOARGOS", "PFGRUPOARG", 
+                                        "GRUPOAVAL", "PFAVAL", 
+                                        "GRUPOSURA", "PFGRUPSURA"]
 
 # Lista de indicdores técnicos:
 lista_indicadores_superiores = ["Bollinger Bands", "EMA", "Parabolic SAR"]
@@ -265,16 +302,37 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
 @app.callback([Output("well_text", "style"), 
                Output("well_text", "children"), 
                Output("gasText", "children"),
+               Output("oilText", "children"),
                Output("waterText", "children"),
                Output("TextoSector", "children")],              
               [Input("dropdown", "value")])
-def color(accion_seleccionada):
+def actualizacion_datos(accion_seleccionada):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
     fecha_mas_reciente = datos_seleccionados["Fecha"].max()
     datos_mas_recientes = datos_seleccionados[datos_seleccionados["Fecha"] == fecha_mas_reciente]
     el_sector = sectores[accion_seleccionada]
     ultimo_precio = datos_mas_recientes["Cierre"].values[0]
     el_yield = str(format(round((dividendos[accion_seleccionada]/ultimo_precio)*100,2), '.2f'))+"%"
+    la_capitalizacion = "0B"
+    if accion_seleccionada in acciones_preferenciales_y_ordinarias:
+        if (accion_seleccionada == "BCOLOMBIA") | (accion_seleccionada == "PFBCOLOM"):
+            ordinaria = "BCOLOMBIA"
+            preferencial = "PFBCOLOM"
+            # Precio de la ordinaria:
+            datos_ordinaria = datos[datos["Nemotecnico"] == ordinaria]
+            fecha_mas_reciente_ordinaria = datos_ordinaria["Fecha"].max()
+            precio_ordinaria = datos_ordinaria[datos_ordinaria["Fecha"] == fecha_mas_reciente_ordinaria]["Cierre"].values[0]
+            
+            # Precio de la preferencial:
+            datos_preferencial = datos[datos["Nemotecnico"] == preferencial]
+            fecha_mas_reciente_preferencial = datos_preferencial["Fecha"].max()
+            precio_preferencial = datos_preferencial[datos_preferencial["Fecha"] == fecha_mas_reciente_preferencial]["Cierre"].values[0]
+            
+            # Capitalización de la empresa:
+            la_capitalizacion = ((precio_ordinaria*numero_acciones[ordinaria])+(precio_preferencial*numero_acciones[preferencial]))/1000000000000
+    else:
+        la_capitalizacion = (ultimo_precio*numero_acciones[accion_seleccionada])/1000000000000 
+                    
     ultimo_precio = "$"+str(ultimo_precio)
     ultima_variacion = datos_mas_recientes["Variacion"].values[0]
     ultima_variacion_en_numero = float(ultima_variacion.strip("%"))
@@ -284,7 +342,7 @@ def color(accion_seleccionada):
         mi_color = "red"
     else:
         mi_color = "darkblue"
-    return {"color": mi_color}, ultima_variacion, ultimo_precio, el_yield, el_sector
+    return {"color": mi_color}, ultima_variacion, ultimo_precio, la_capitalizacion, el_yield, el_sector
 
 
 if __name__ == '__main__':
