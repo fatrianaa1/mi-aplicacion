@@ -107,6 +107,27 @@ acciones_preferenciales_y_ordinarias = ["BCOLOMBIA", "PFBCOLOM",
                                         "GRUPOAVAL", "PFAVAL", 
                                         "GRUPOSURA", "PFGRUPSURA"]
 
+# Diccionario con la acción ordinaria (primera posición) y
+# la acción preferencial (segunda posición) para los emmisores
+# señalados anteriormente:
+
+Bancolombia = ["BCOLOMBIA", "PFBCOLOM"]
+Cemargos = ["CEMARGOS", "PFCEMARGOS"]
+Grupo_Argos = ["GRUPOARGOS", "PFGRUPOARG"]
+Grupo_Aval = ["GRUPOAVAL", "PFAVAL"]
+Grupo_Sura = ["GRUPOSURA", "PFGRUPSURA"]
+
+diccionario_ordinarias_preferenciales = {"BCOLOMBIA": Bancolombia, 
+                                         "PFBCOLOM": Bancolombia, 
+                                         "CEMARGOS": Cemargos, 
+                                         "PFCEMARGOS": Cemargos, 
+                                         "GRUPOARGOS": Grupo_Argos, 
+                                         "PFGRUPOARG": Grupo_Argos, 
+                                         "GRUPOAVAL": Grupo_Aval, 
+                                         "PFAVAL": Grupo_Aval, 
+                                         "GRUPOSURA": Grupo_Sura, 
+                                         "PFGRUPSURA": Grupo_Sura}
+
 # Lista de indicdores técnicos:
 lista_indicadores_superiores = ["Bollinger Bands", "EMA", "Parabolic SAR"]
 lista_indicadores_inferiores = ["MACD", "RSI"]
@@ -315,23 +336,24 @@ def actualizacion_datos(accion_seleccionada):
     el_yield = str(format(round((dividendos[accion_seleccionada]/ultimo_precio)*100,2), '.2f'))+"%"
     la_capitalizacion = "0B"
     if accion_seleccionada in acciones_preferenciales_y_ordinarias:
-        if (accion_seleccionada == "BCOLOMBIA") | (accion_seleccionada == "PFBCOLOM"):
-            ordinaria = "BCOLOMBIA"
-            preferencial = "PFBCOLOM"
-            # Precio de la ordinaria:
-            datos_ordinaria = datos[datos["Nemotecnico"] == ordinaria]
-            fecha_mas_reciente_ordinaria = datos_ordinaria["Fecha"].max()
-            precio_ordinaria = datos_ordinaria[datos_ordinaria["Fecha"] == fecha_mas_reciente_ordinaria]["Cierre"].values[0]
+        ordinaria = diccionario_ordinarias_preferenciales[accion_seleccionada][0]
+        preferencial = diccionario_ordinarias_preferenciales[accion_seleccionada][1]
+        # Precio de la ordinaria:
+        datos_ordinaria = datos[datos["Nemotecnico"] == ordinaria]
+        fecha_mas_reciente_ordinaria = datos_ordinaria["Fecha"].max()
+        precio_ordinaria = datos_ordinaria[datos_ordinaria["Fecha"] == fecha_mas_reciente_ordinaria]["Cierre"].values[0]
             
-            # Precio de la preferencial:
-            datos_preferencial = datos[datos["Nemotecnico"] == preferencial]
-            fecha_mas_reciente_preferencial = datos_preferencial["Fecha"].max()
-            precio_preferencial = datos_preferencial[datos_preferencial["Fecha"] == fecha_mas_reciente_preferencial]["Cierre"].values[0]
+        # Precio de la preferencial:
+        datos_preferencial = datos[datos["Nemotecnico"] == preferencial]
+        fecha_mas_reciente_preferencial = datos_preferencial["Fecha"].max()
+        precio_preferencial = datos_preferencial[datos_preferencial["Fecha"] == fecha_mas_reciente_preferencial]["Cierre"].values[0]
             
-            # Capitalización de la empresa:
-            la_capitalizacion = ((precio_ordinaria*numero_acciones[ordinaria])+(precio_preferencial*numero_acciones[preferencial]))/1000000000000
+        # Capitalización de la empresa:
+        la_capitalizacion = ((precio_ordinaria*numero_acciones[ordinaria])+(precio_preferencial*numero_acciones[preferencial]))/1000000000000
+        la_capitalizacion = str(format(la_capitalizacion, '.2f'))+"B"
     else:
-        la_capitalizacion = (ultimo_precio*numero_acciones[accion_seleccionada])/1000000000000 
+        la_capitalizacion = (ultimo_precio*numero_acciones[accion_seleccionada])/1000000000000
+        la_capitalizacion = str(format(la_capitalizacion, '.2f'))+"B"
                     
     ultimo_precio = "$"+str(ultimo_precio)
     ultima_variacion = datos_mas_recientes["Variacion"].values[0]
