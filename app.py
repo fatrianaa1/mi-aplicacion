@@ -274,7 +274,7 @@ def color(accion_seleccionada):
     datos_mas_recientes = datos_seleccionados[datos_seleccionados["Fecha"] == fecha_mas_reciente]
     el_sector = sectores[accion_seleccionada]
     ultimo_precio = datos_mas_recientes["Cierre"].values[0]
-    el_yield = str(round(dividendos[accion_seleccionada]/ultimo_precio, 2)*100)+"%"
+    el_yield = str(format(round((dividendos[accion_seleccionada]/ultimo_precio)*100,2), '.2f'))+"%"
     ultimo_precio = "$"+str(ultimo_precio)
     ultima_variacion = datos_mas_recientes["Variacion"].values[0]
     ultima_variacion_en_numero = float(ultima_variacion.strip("%"))
