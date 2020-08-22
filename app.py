@@ -248,9 +248,11 @@ app.layout = html.Div([
                   id= "checklist_inferiores", 
                   options = [{"label": i, "value": i} for i in lista_indicadores_inferiores], 
                   value = ["MACD"])], 
-             className = 'four columns'),
+             className = 'three columns'),
     html.Br(),
-    html.Div([dcc.Graph(id='grafico_principal')], className = "eight columns")
+    html.Div([dcc.Graph(id='grafico_principal')], className = "six columns"), 
+    html.Br(), 
+    html.Div([html.P("Otra vaina", className= "control_label")], className = "three columns")
 ])
 
 
