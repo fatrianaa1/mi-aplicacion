@@ -269,7 +269,8 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
     datos_seleccionados = datos_seleccionados.set_index("Fecha")
     
     # Gráfico elaborado con Cufflinks:
-    grafico = cf.QuantFig(datos_seleccionados, name = accion_seleccionada)
+    grafico = cf.QuantFig(datos_seleccionados, title = "Comportamiento de " + accion_seleccionada, 
+                          name = accion_seleccionada, legend = "top")
     
     # Definir colores personalizados con atributo ".theme":
     grafico.theme = {'theme': 'pearl', 'up_color': '#008000', 'down_color': '#a52a2a'}
