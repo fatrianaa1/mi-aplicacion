@@ -269,7 +269,7 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
     datos_seleccionados = datos_seleccionados.set_index("Fecha")
     
     # Gráfico elaborado con Cufflinks:
-    grafico = cf.QuantFig(datos_seleccionados, title = "Comportamiento de " + accion_seleccionada, 
+    grafico = cf.QuantFig(datos_seleccionados, 
                           name = accion_seleccionada, legend = "bottom")
     
     # Definir colores personalizados con atributo ".theme":
@@ -288,7 +288,7 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
     # Añadir los estudios técnicos superiores:
 
     if "Bollinger Bands" in indicadores_superiores_seleccionados: 
-        grafico.add_bollinger_bands(periods = 5)
+        grafico.add_bollinger_bands(periods = 5, name = "BOLL")
     else:
         a = 1
     
@@ -304,7 +304,7 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
 
     # Añadir los estudios técnicos inferiores:
     if "MACD" in indicadores_inferiores_seleccionados:
-        grafico.add_macd()
+        grafico.add_macd(name = "MACD")
     else:
         a = 1
         
