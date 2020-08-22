@@ -279,6 +279,9 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
     # las columnas del dataframe y entienda a qué se refiere cada una:
     grafico._d = {'open': 'Apertura', 'high': 'Alto', 'low': 'Bajo', 'close': 'Cierre'}
     
+    # Eliminar la leyenda:
+    grafico.data["showlegend"] = False
+    
     # Añadir volumen:
     grafico.add_volume(column = "Cantidad")
     
@@ -314,8 +317,6 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
         a = 1
     
     # Crear el gráfico principal como figura plotly:
-    # Eliminar leyenda
-    grafico.data.update(showlegend=False)
     el_grafico_principal = grafico.figure()
     # el_grafico_principal.update_layout(xaxis_rangeslider_visible=False)
 
