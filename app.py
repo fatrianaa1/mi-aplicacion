@@ -317,6 +317,7 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
     # Eliminar la leyenda:
     grafico.data["showlegend"] = False
     el_grafico_principal = grafico.figure()
+    el_grafico_principal.update_layout(showlegend=False)
     # el_grafico_principal.update_layout(xaxis_rangeslider_visible=False)
 
     # Devolver el gráfico principal:
