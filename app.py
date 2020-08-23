@@ -410,7 +410,7 @@ def tabla_de_resumen(accion_seleccionada):
     datos_de_la_tabla = [emisores[accion_seleccionada]]
     la_tabla = pd.DataFrame({"Dato": indicadores, "Valor": datos_de_la_tabla})
     data = la_tabla.to_dict("records")
-    columns = [{"name": i, "id": i,} for i in (la_tabla.columns)]
+    columns = [{"name": i, "id": i} for i in la_tabla.columns]
     la_tabla = dash_table.DataTable(data = data, columns = columns)
     return la_tabla
 
