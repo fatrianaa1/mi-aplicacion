@@ -286,8 +286,9 @@ app.layout = html.Div([
                                    data = [], 
                                    columns = [{"name": ["Resumen básico", "Dato"], "id": "Dato"}, 
                                               {"name": ["Resumen básico", "Valor"], "id": "Valor"}], 
-                                   style_cell={'fontSize':14, 'fontFamily':'sans-serif', 'textAlign': 'left'}, 
-                                   merge_duplicate_headers = True, 
+                                   style_cell={'fontSize':13, 'fontFamily':'sans-serif', 'textAlign': 'left'}, 
+                                   merge_duplicate_headers = True,
+                                   style_as_list_view=True, 
                                    style_header = {'fontWeight': 'bold'}, 
                                    style_data = {'whiteSpace': 'normal', 'height': 'auto'})], 
              className = "three columns")
