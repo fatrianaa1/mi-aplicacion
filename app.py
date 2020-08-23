@@ -284,7 +284,8 @@ app.layout = html.Div([
     html.Div([html.P("Otra vaina", className= "control_label"), 
               dash_table.DataTable(id = "tabla_resumen", 
                                    data = [], 
-                                   columns = [{"name": i, "id": i} for i in ["Dato", "Valor"]])], 
+                                   columns = [{"name": i, "id": i} for i in ["Dato", "Valor"]], 
+                                   style_cell={'fontSize':12, 'fontFamily':'sans-serif', 'color': 'red'})], 
              className = "three columns")
 ])
 
