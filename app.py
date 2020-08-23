@@ -1,6 +1,7 @@
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
+import dash_table
 from dash.dependencies import Input, Output
 import plotly.graph_objs as go
 import pandas as pd
@@ -128,6 +129,34 @@ diccionario_ordinarias_preferenciales = {"BCOLOMBIA": Bancolombia,
                                          "GRUPOSURA": Grupo_Sura, 
                                          "PFGRUPSURA": Grupo_Sura}
 
+# Listado de emisores (se emplea para la actualización de la tabla de
+# resumen básico)
+
+emisores = {"BCOLOMBIA": "Bancolombia S.A", 
+            "BOGOTA": "Banco de Bogotá S.A", 
+            "BVC": "Bolsa de Valores de Colombia S.A", 
+            "CELSIA": "Celsia S.A E.S.P", 
+            "CEMARGOS": "Cementos Argos S.A", 
+            "CLH": "Cemex Latam Holdings S.A", 
+            "CNEC": "Canacol Energy Ltd", 
+            "CONCONCRET": "Constructora Conconcreto S.A", 
+            "CORFICOLCF": "Corporación Financiera Colombiana", 
+            "ECOPETROL": "Ecopetrol S.A", 
+            "ETB": "Empresa de Telecomunicaciones de Bogotá S.A E.S.P", 
+            "EXITO": "Almacenes Éxito S.A", 
+            "GEB": "Grupo Energía Bogotá S.A E.S.P", 
+            "GRUPOARGOS": "Grupo Argos S.A", 
+            "GRUPOAVAL": "Grupo Aval Acciones y Valores S.A", 
+            "GRUPOSURA": "Grupo de Inversiones Suramericana S.A", 
+            "ISA": "Interconexión Eléctrica S.A", 
+            "NUTRESA": "Grupo Nutresa S.A", 
+            "PFAVAL": "Grupo Aval Acciones y Valores S.A", 
+            "PFBCOLOM": "Bancolombia S.A", 
+            "PFCEMARGOS": "Cementos Argos S.A", 
+            "PFDAVVNDA": "Banco Davivienda S.A", 
+            "PFGRUPOARG": "Grupo Argos S.A", 
+            "PFGRUPSURA": "Grupo de Inversiones Suramericana S.A"} 
+
 # Lista de indicdores técnicos:
 lista_indicadores_superiores = ["Bollinger Bands", "EMA", "Parabolic SAR"]
 lista_indicadores_inferiores = ["MACD", "RSI"]
@@ -252,7 +281,10 @@ app.layout = html.Div([
     html.Br(),
     html.Div([dcc.Graph(id='grafico_principal')], className = "six columns"), 
     html.Br(), 
-    html.Div([html.P("Otra vaina", className= "control_label")], className = "three columns")
+    html.Div([html.P("Otra vaina", className= "control_label"), 
+              dash_table.DataTable(id = "tabla_resumen", 
+                                   columns=[{"name": i, "id": i} for i in ["Dato", "Valor"]])], 
+             className = "three columns")
 ])
 
 
@@ -371,6 +403,16 @@ def actualizacion_datos(accion_seleccionada):
     else:
         mi_color = "darkblue"
     return {"color": mi_color}, ultima_variacion, ultimo_precio, la_capitalizacion, el_yield, el_sector
+
+# Actualización de tabla de resumen básico:
+@app.callback([Output("tabla_resumen", "data")], 
+              [Input("dropdown", "value")])
+def tabla_de_resumen(accion_seleccionada):
+    indicadores = ["Emisor:"]
+    datos_de_la_tabla = [emisores[accion_seleccionada]]
+    la_tabla = pd.DataFrame({"Dato": indicadores, "Valor": datos_de_la_tabla})
+    la_tabla = la_tabla.to_dict("records")
+    return la_tabla
 
 
 if __name__ == '__main__':
