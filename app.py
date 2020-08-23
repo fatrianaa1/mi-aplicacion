@@ -418,8 +418,8 @@ def tabla_de_resumen(accion_seleccionada):
     la_tabla = pd.DataFrame({"Dato": indicadores, "Valor": datos_de_la_tabla})
     columns = [{"name": ["Resumen básico", "Dato"], "id": "Dato"}, 
                {"name": ["Resumen básico", "Valor"], "id": "Valor"}]
-    data = [{"Dato": la_tabla.loc[i, "Dato"].values, 
-             "Valor": la_tabla.loc[i, "Valor"].values} for i in range(la_tabla.shape[0])]
+    data = [{"Dato": la_tabla["Dato"].values[i], 
+             "Valor": la_tabla["Valor"].values[i]} for i in range(la_tabla.shape[0])]
     return data, columns
 
 
