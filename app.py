@@ -286,8 +286,9 @@ app.layout = html.Div([
                                    data = [], 
                                    columns = [{"name": ["Resumen básico", "Dato"], "id": "Dato"}, 
                                               {"name": ["Resumen básico", "Valor"], "id": "Valor"}], 
-                                   style_cell={'fontSize':12, 'fontFamily':'sans-serif', 'color': 'red'}, 
-                                   merge_duplicate_headers = True)], 
+                                   style_cell={'fontSize':12, 'fontFamily':'sans-serif'}, 
+                                   merge_duplicate_headers = True, 
+                                   style_header = {'fontWeight': 'bold'})], 
              className = "three columns")
 ])
 
@@ -413,8 +414,8 @@ def actualizacion_datos(accion_seleccionada):
                Output("tabla_resumen", "columns")], 
               [Input("dropdown", "value")])
 def tabla_de_resumen(accion_seleccionada):
-    indicadores = ["Emisor:"]
-    datos_de_la_tabla = [emisores[accion_seleccionada]]
+    indicadores = ["Emisor:", "En circulación:"]
+    datos_de_la_tabla = [emisores[accion_seleccionada], numero_acciones[accion_seleccionada]]
     la_tabla = pd.DataFrame({"Dato": indicadores, "Valor": datos_de_la_tabla})
     columns = [{"name": ["Resumen básico", "Dato"], "id": "Dato"}, 
                {"name": ["Resumen básico", "Valor"], "id": "Valor"}]
