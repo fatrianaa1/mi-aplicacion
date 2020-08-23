@@ -284,8 +284,10 @@ app.layout = html.Div([
     html.Div([html.P("Otra vaina", className= "control_label"), 
               dash_table.DataTable(id = "tabla_resumen", 
                                    data = [], 
-                                   columns = [{"name": i, "id": i} for i in ["Dato", "Valor"]], 
-                                   style_cell={'fontSize':12, 'fontFamily':'sans-serif', 'color': 'red'})], 
+                                   columns = [{"name": ["Resumen básico", "Dato"], "id": "Dato"}, 
+                                              {"name": ["Resumen básico", "Valor"], "id": "Valor"}], 
+                                   style_cell={'fontSize':12, 'fontFamily':'sans-serif', 'color': 'red'}, 
+                                   merge_duplicate_headers = True)], 
              className = "three columns")
 ])
 
@@ -414,8 +416,10 @@ def tabla_de_resumen(accion_seleccionada):
     indicadores = ["Emisor:"]
     datos_de_la_tabla = [emisores[accion_seleccionada]]
     la_tabla = pd.DataFrame({"Dato": indicadores, "Valor": datos_de_la_tabla})
-    data = la_tabla.to_dict("records")
-    columns = [{"name": i, "id": i,} for i in (la_tabla.columns)]
+    columns = [{"name": ["Resumen básico", "Dato"], "id": "Dato"}, 
+               {"name": ["Resumen básico", "Valor"], "id": "Valor"}]
+    data = [{"Dato": la_tabla.loc[i, "Dato"].values, 
+             "Valor": la_tabla.loc[i, "Valor"].values} for i in range(la_tabla.shape[0])]
     return data, columns
 
 
