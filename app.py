@@ -281,7 +281,10 @@ app.layout = html.Div([
     html.Br(),
     html.Div([dcc.Graph(id='grafico_principal')], className = "six columns"), 
     html.Br(), 
-    html.Div([html.P("Otra vaina", className= "control_label"), html.Div(id = "tabla_resumen")], 
+    html.Div([html.P("Otra vaina", className= "control_label"), 
+              dash_table.DataTable(id = "tabla_resumen", 
+                                   data = [], 
+                                   columns = {"name": i, "id": i} for i in ["Dato", "Valor"])], 
              className = "three columns")
 ])
 
@@ -403,16 +406,16 @@ def actualizacion_datos(accion_seleccionada):
     return {"color": mi_color}, ultima_variacion, ultimo_precio, la_capitalizacion, el_yield, el_sector
 
 # Actualización de tabla de resumen básico:
-@app.callback([Output("tabla_resumen", "children")], 
+@app.callback([Output("tabla_resumen", "data"), 
+               Output("tabla_resumen", "columns")], 
               [Input("dropdown", "value")])
 def tabla_de_resumen(accion_seleccionada):
     indicadores = ["Emisor:"]
     datos_de_la_tabla = [emisores[accion_seleccionada]]
     la_tabla = pd.DataFrame({"Dato": indicadores, "Valor": datos_de_la_tabla})
     data = la_tabla.to_dict("records")
-    columns = [{"name": i, "id": i} for i in la_tabla.columns]
-    la_tabla = dash_table.DataTable(data = data, columns = columns)
-    return la_tabla
+    columns = [{"name": i, "id": i,} for i in (la_tabla.columns)]
+    return data, columns
 
 
 if __name__ == '__main__':
