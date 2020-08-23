@@ -280,7 +280,6 @@ app.layout = html.Div([
              className = 'three columns'),
     html.Br(),
     html.Div([dcc.Graph(id='grafico_principal')], className = "six columns"), 
-    html.Br(), 
     html.Div([html.H6("Información"), 
               dash_table.DataTable(id = "tabla_resumen", 
                                    data = [], 
