@@ -7,6 +7,7 @@ import plotly.graph_objs as go
 import pandas as pd
 import numpy as np
 import cufflinks as cf
+from pandas.tseries.offsets import DateOffset
 
 
 
@@ -304,6 +305,10 @@ app.layout = html.Div([
                Input('checklist_inferiores', 'value')])
 def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados, indicadores_inferiores_seleccionados):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
+    fecha_mas_reciente = datos_seleccionados["Fecha"].max()
+    periodo = 6
+    fecha_de_referencia = fecha_mas_reciente-DateOffset(months = periodo)
+    datos_seleccionados = datos_seleccionados[datos_seleccionados["Fecha"]>= fecha_de_referencia]
     datos_seleccionados = datos_seleccionados.set_index("Fecha")
     
     # Gráfico elaborado con Cufflinks:
