@@ -306,7 +306,7 @@ app.layout = html.Div([
 def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados, indicadores_inferiores_seleccionados):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
     fecha_mas_reciente = datos_seleccionados["Fecha"].max()
-    periodo = 6
+    periodo = 12
     fecha_de_referencia = fecha_mas_reciente-DateOffset(months = periodo)
     datos_seleccionados = datos_seleccionados[datos_seleccionados["Fecha"]>= fecha_de_referencia]
     datos_seleccionados = datos_seleccionados.set_index("Fecha")
@@ -331,12 +331,12 @@ def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados,
     # Añadir los estudios técnicos superiores:
 
     if "Bollinger Bands" in indicadores_superiores_seleccionados: 
-        grafico.add_bollinger_bands(periods = 5, name = "BOLL")
+        grafico.add_bollinger_bands(periods = 10, name = "BOLL")
     else:
         a = 1
     
     if "EMA" in indicadores_superiores_seleccionados:
-        grafico.add_ema()
+        grafico.add_ema(periods = 20, colors = "#ff55a3")
     else:
         a = 1
         
