@@ -13,7 +13,7 @@ from pandas.tseries.offsets import DateOffset
 
 # Definir tabla de datos:
 datos = pd.read_csv("https://gist.githubusercontent.com/fatrianaa1/76c832481a4fdb2e3683c2b232b5476f/raw/data_acciones.csv", 
-                    delimiter = "\t")
+                    delimiter = "\t", nrows = 6250)
 datos["Fecha"] = pd.to_datetime(datos["Fecha"])
 datos = datos[datos["Cantidad"] > 0]
 lista_de_acciones = sorted(list(datos["Nemotecnico"].unique()))
