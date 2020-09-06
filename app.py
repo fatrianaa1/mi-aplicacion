@@ -420,8 +420,14 @@ def actualizacion_datos(accion_seleccionada):
                Output("tabla_resumen", "columns")], 
               [Input("dropdown", "value")])
 def tabla_de_resumen(accion_seleccionada):
-    indicadores = ["Emisor:", "En circulación:"]
-    datos_de_la_tabla = [emisores[accion_seleccionada], 
+    datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
+    fecha_mas_reciente = datos_seleccionados["Fecha"].max()
+    fecha_de_referencia = fecha_mas_reciente-DateOffset(months = 12)
+    datos_seleccionados = datos_seleccionados[datos_seleccionados["Fecha"]>= fecha_de_referencia]
+    maximo_52_semanas = datos_seleccionados["Cierre"].max()
+    minimo_52_semanas = datos_seleccionados["Cierre"].min()
+    indicadores = ["Máximo 52 semanas:", "Mínimo 52 semanas:","Emisor:", "En circulación:"]
+    datos_de_la_tabla = [maximo_52_semanas, minimo_52_semanas, emisores[accion_seleccionada], 
                          str(format(numero_acciones[accion_seleccionada]/1000000, '.2f'))+"M"]
     la_tabla = pd.DataFrame({"Dato": indicadores, "Valor": datos_de_la_tabla})
     columns = [{"name": ["Resumen básico", "Dato"], "id": "Dato"}, 
