@@ -158,6 +158,16 @@ emisores = {"BCOLOMBIA": "Bancolombia S.A",
             "PFGRUPOARG": "Grupo Argos S.A", 
             "PFGRUPSURA": "Grupo de Inversiones Suramericana S.A"} 
 
+# Lista de diccionarios (con estructura "label" y "value" obligatoriamente)
+# de periodos para definir el intervalo del gráfico:
+periodos = [{"label": "1 año", "value": "1 año"}, 
+            {"label": "6 meses", "value": "6 meses"}, 
+            {"label": "3 meses", "value": "3 meses"}, 
+            {"label": "1 mes", "value": "1 mes"}]            
+
+# Diccionario con el número de meses atrás a considerar para cada periodo:
+meses = {"1 año": 12, "6 meses": 6, "3 meses": 3, "1 mes": 1}
+
 # Lista de indicdores técnicos:
 lista_indicadores_superiores = ["Bollinger Bands", "EMA", "Parabolic SAR"]
 lista_indicadores_inferiores = ["MACD", "RSI"]
@@ -167,8 +177,6 @@ lista_indicadores_inferiores = ["MACD", "RSI"]
 app = dash.Dash(__name__)
 server = app.server
 app.title= "Valkiria"
-
-
 
 # Configurar aplicación
 app.layout = html.Div([
@@ -280,7 +288,9 @@ app.layout = html.Div([
                   value = ["MACD"])], 
              className = 'three columns'),
     html.Br(),
-    html.Div([dcc.Graph(id='grafico_principal')], className = "six columns"), 
+    html.Div([html.P("Seleccione un periodo:", className = "control_label"), 
+              dcc.Dropdown(id = "dropdown_fechas", options = periodos, value = "6 meses"),
+              dcc.Graph(id='grafico_principal')], className = "six columns"), 
     html.Div([html.H6("Información"), 
               dash_table.DataTable(id = "tabla_resumen", 
                                    data = [], 
@@ -290,7 +300,9 @@ app.layout = html.Div([
                                    merge_duplicate_headers = True,
                                    style_as_list_view=True, 
                                    style_header = {'fontWeight': 'bold'}, 
-                                   style_data = {'whiteSpace': 'normal', 'height': 'auto'})], 
+                                   style_data = {'whiteSpace': 'normal', 'height': 'auto'},
+                                   style_data_conditional=([{'if': {'filter_query': '{Valor} contains "-" && {Valor} contains "%"','column_id': 'Valor'},
+                                                             'color': 'red'}]))], 
              className = "three columns")
 ])
 
@@ -300,13 +312,14 @@ app.layout = html.Div([
 
 # Actualizar gráfico principal con la acción seleccionada:
 @app.callback(Output('grafico_principal', 'figure'),
-              [Input('dropdown', 'value'), 
+              [Input('dropdown', 'value'),
+               Input('dropdown_fechas', 'value'), 
                Input('checklist_superiores', 'value'), 
                Input('checklist_inferiores', 'value')])
-def grafica_principal(accion_seleccionada, indicadores_superiores_seleccionados, indicadores_inferiores_seleccionados):
+def grafica_principal(accion_seleccionada, intervalo_fechas, indicadores_superiores_seleccionados, indicadores_inferiores_seleccionados):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
     fecha_mas_reciente = datos_seleccionados["Fecha"].max()
-    periodo = 12
+    periodo = meses[intervalo_fechas]
     fecha_de_referencia = fecha_mas_reciente-DateOffset(months = periodo)
     datos_seleccionados = datos_seleccionados[datos_seleccionados["Fecha"]>= fecha_de_referencia]
     datos_seleccionados = datos_seleccionados.set_index("Fecha")
@@ -404,7 +417,7 @@ def actualizacion_datos(accion_seleccionada):
         la_capitalizacion = (ultimo_precio*numero_acciones[accion_seleccionada])/1000000000000
         la_capitalizacion = str(format(la_capitalizacion, '.2f'))+"B"
                     
-    ultimo_precio = "$"+str(ultimo_precio)
+    ultimo_precio = "$"+str(int(ultimo_precio))
     ultima_variacion = datos_mas_recientes["Variacion"].values[0]
     ultima_variacion_en_numero = float(ultima_variacion.strip("%"))
     if ultima_variacion_en_numero > 0:
@@ -418,16 +431,41 @@ def actualizacion_datos(accion_seleccionada):
 # Actualización de tabla de resumen básico:
 @app.callback([Output("tabla_resumen", "data"), 
                Output("tabla_resumen", "columns")], 
-              [Input("dropdown", "value")])
-def tabla_de_resumen(accion_seleccionada):
+              [Input("dropdown", "value"), 
+               Input("dropdown_fechas", "value")])
+def tabla_de_resumen(accion_seleccionada, intervalo_fechas):
     datos_seleccionados = datos[datos['Nemotecnico']==accion_seleccionada]
+    periodo = meses[intervalo_fechas]
+    # Selección de fechas:
     fecha_mas_reciente = datos_seleccionados["Fecha"].max()
-    fecha_de_referencia = fecha_mas_reciente-DateOffset(months = 12)
-    datos_seleccionados = datos_seleccionados[datos_seleccionados["Fecha"]>= fecha_de_referencia]
-    maximo_52_semanas = datos_seleccionados["Cierre"].max()
-    minimo_52_semanas = datos_seleccionados["Cierre"].min()
-    indicadores = ["Máximo 52 semanas:", "Mínimo 52 semanas:","Emisor:", "En circulación:"]
-    datos_de_la_tabla = [maximo_52_semanas, minimo_52_semanas, emisores[accion_seleccionada], 
+    fecha_de_referencia_52_semanas = fecha_mas_reciente-DateOffset(months = 12)
+    fecha_de_referencia_periodo_seleccionado = fecha_mas_reciente-DateOffset(months = periodo)
+    ultimo_anio = datos_seleccionados["Fecha"].dt.year.max()
+    fecha_YTD = datos_seleccionados[datos_seleccionados["Fecha"].dt.year >= ultimo_anio]["Fecha"].min() 
+    # Selección de los datos para los correspondientes intervalos:
+    datos_mas_recientes = datos_seleccionados[datos_seleccionados["Fecha"] == fecha_mas_reciente]
+    datos_seleccionados_52_semanas = datos_seleccionados[datos_seleccionados["Fecha"]>= fecha_de_referencia_52_semanas]
+    datos_seleccionados_periodo = datos_seleccionados[datos_seleccionados["Fecha"]>= fecha_de_referencia_periodo_seleccionado]
+    # Precios de referencia:
+    ultimo_precio = datos_mas_recientes["Cierre"].values[0]
+    precio_inicial_YTD = datos_seleccionados[datos_seleccionados["Fecha"] == fecha_YTD]["Cierre"].values[0]
+    maximo_52_semanas = datos_seleccionados_52_semanas["Cierre"].max()
+    minimo_52_semanas = datos_seleccionados_52_semanas["Cierre"].min()
+    maximo_periodo = datos_seleccionados_periodo["Cierre"].max()
+    minimo_periodo = datos_seleccionados_periodo["Cierre"].min()
+    # Rangos de precios:
+    rango_52_semanas = "$" + str(int(minimo_52_semanas)) + "-" + "$" + str(int(maximo_52_semanas))
+    rango_periodo = "$" + str(int(minimo_periodo))+ "-" + "$" + str(int(maximo_periodo))
+    # Potenciales de valorización:
+    potencial_al_maximo_52 = "+" + str(round(((maximo_52_semanas-ultimo_precio)/ultimo_precio)*100, 2))+"%"
+    potencial_al_minimo_52 = str(round(((minimo_52_semanas-ultimo_precio)/ultimo_precio)*100, 2))+"%"
+    YTD = str(round(((ultimo_precio - precio_inicial_YTD)/precio_inicial_YTD)*100, 2))+"%"
+    indicadores = ["Rango 52 semanas:", "Rango periodo seleccionado:", 
+                   "Potencial al Máx52:", "Potencial al Mín52:", "YTD",
+                   "Emisor:", "En circulación:"]
+    datos_de_la_tabla = [rango_52_semanas, rango_periodo, 
+                         potencial_al_maximo_52, potencial_al_minimo_52, YTD, 
+                         emisores[accion_seleccionada], 
                          str(format(numero_acciones[accion_seleccionada]/1000000, '.2f'))+"M"]
     la_tabla = pd.DataFrame({"Dato": indicadores, "Valor": datos_de_la_tabla})
     columns = [{"name": ["Resumen básico", "Dato"], "id": "Dato"}, 
