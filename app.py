@@ -174,6 +174,7 @@ lista_indicadores_inferiores = ["MACD", "RSI"]
 
 
 # Inicializar la aplicación:
+# Los ORIGINALES SON:
 app = dash.Dash(__name__)
 server = app.server
 app.title= "Valkiria"
@@ -303,7 +304,8 @@ app.layout = html.Div([
                                    style_data = {'whiteSpace': 'normal', 'height': 'auto'},
                                    style_data_conditional=([{'if': {'filter_query': '{Valor} contains "-" && {Valor} contains "%"','column_id': 'Valor'},
                                                              'color': 'red'}]))], 
-             className = "three columns")
+             className = "three columns"), 
+    html.Div([dcc.Graph(id = 'grafico_accionistas')], className = "three columns")
 ])
 
 
@@ -474,6 +476,14 @@ def tabla_de_resumen(accion_seleccionada, intervalo_fechas):
              "Valor": la_tabla["Valor"].values[i]} for i in range(la_tabla.shape[0])]
     return data, columns
 
+# Actualización de gráfico de accionistas:
+@app.callback(Output("grafico_accionistas", "figure"), 
+              [Input("dropdown", "value")])
+def grafico_de_accionistas(accion_seleccionada):
+    accionistas = ['Accionista 1','Accionista 2','Accionista 3','Accionista 4']
+    participaciones = [4500, 2500, 1053, 500]
+    fig = go.Figure(data=[go.Pie(labels=accionistas, values=participaciones, hole=.3)])
+    return fig
 
 if __name__ == '__main__':
     app.run_server()
