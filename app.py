@@ -174,7 +174,6 @@ lista_indicadores_inferiores = ["MACD", "RSI"]
 
 
 # Inicializar la aplicación:
-# Los ORIGINALES SON:
 app = dash.Dash(__name__)
 server = app.server
 app.title= "Valkiria"
@@ -271,6 +270,7 @@ app.layout = html.Div([
         className="row flex-display",
     ),
     html.Br(),
+    html.Div([
     html.Div([html.P("Seleccione una acción:", className="control_label"),
         dcc.Dropdown(
         id= "dropdown",
@@ -288,7 +288,6 @@ app.layout = html.Div([
                   options = [{"label": i, "value": i} for i in lista_indicadores_inferiores], 
                   value = ["MACD"])], 
              className = 'three columns'),
-    html.Br(),
     html.Div([html.P("Seleccione un periodo:", className = "control_label"), 
               dcc.Dropdown(id = "dropdown_fechas", options = periodos, value = "6 meses"),
               dcc.Graph(id='grafico_principal')], className = "six columns"), 
@@ -304,7 +303,8 @@ app.layout = html.Div([
                                    style_data = {'whiteSpace': 'normal', 'height': 'auto'},
                                    style_data_conditional=([{'if': {'filter_query': '{Valor} contains "-" && {Valor} contains "%"','column_id': 'Valor'},
                                                              'color': 'red'}]))], 
-             className = "three columns"), 
+             className = "three columns")], 
+             className = "row"),
     html.Div([dcc.Graph(id = 'grafico_accionistas')], className = "three columns")
 ])
 
@@ -484,6 +484,5 @@ def grafico_de_accionistas(accion_seleccionada):
     participaciones = [4500, 2500, 1053, 500]
     fig = go.Figure(data=[go.Pie(labels=accionistas, values=participaciones, hole=.3)])
     return fig
-
 if __name__ == '__main__':
     app.run_server()
