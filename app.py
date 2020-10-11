@@ -168,15 +168,35 @@ periodos = [{"label": "1 año", "value": "1 año"},
 # Diccionario con el número de meses atrás a considerar para cada periodo:
 meses = {"1 año": 12, "6 meses": 6, "3 meses": 3, "1 mes": 1}
 
-# Lista de indicdores técnicos:
+# Lista de indicadores técnicos:
 lista_indicadores_superiores = ["Bollinger Bands", "EMA", "Parabolic SAR"]
 lista_indicadores_inferiores = ["MACD", "RSI"]
+
+
+# Diccionario de diccionarios con información de composición accionaria:
+# En el caso de empresas con acciones preferenciales es la suma de preferenciales y ordinarias
+composicion_accionaria = {"BCOLOMBIA": {"Grupo de Inversiones Suramericana": 234027881,
+                                        "Fondo Bancolombia ADR Program": 156917764, 
+                                        "Fondo de Pensiones Obligatorias Porvenir Moderado": 50883394+23502497, 
+                                        "Fondo de Pensiones Obligatorias Protección Moderado": 21048882+53667418, 
+                                        "Otros":421779164}, 
+                          "BOGOTA": {"Grupo Aval Acciones y Valores S.A": 227710487, 
+                                     "Consultorías de Inversiones S.A": 32140397, 
+                                     "Rendifin S.A": 11439891, 
+                                     "Adminegocios & Cia SCA": 9062222, 
+                                     "Otros":50927558}, 
+                          "ECOPETROL": {"Entidades Estatales": 36384788417, 
+                                        "JP Morgan Chase Bank NA FBO Holders Of DR Ecopetrol": 800624420, 
+                                        "Fondo de Pensiones Obligatorias Porvenir Moderado": 420491354, 
+                                        "Fondo de Pensiones Obligatorias Protección Moderado": 334489075, 
+                                        "Otros": 3176301424}}
 
 
 # Inicializar la aplicación:
 app = dash.Dash(__name__)
 server = app.server
 app.title= "Valkiria"
+
 
 # Configurar aplicación
 app.layout = html.Div([
@@ -305,7 +325,8 @@ app.layout = html.Div([
                                                              'color': 'red'}]))], 
              className = "three columns")], 
              className = "row"),
-    html.Div([dcc.Graph(id = 'grafico_accionistas')], className = "three columns")
+    html.Br(),
+    html.Div([dcc.Graph(id = 'grafico_accionistas')], className = "pretty_container five columns")
 ])
 
 
@@ -480,8 +501,8 @@ def tabla_de_resumen(accion_seleccionada, intervalo_fechas):
 @app.callback(Output("grafico_accionistas", "figure"), 
               [Input("dropdown", "value")])
 def grafico_de_accionistas(accion_seleccionada):
-    accionistas = ['Accionista 1','Accionista 2','Accionista 3','Accionista 4']
-    participaciones = [4500, 2500, 1053, 500]
+    accionistas = list(composicion_accionaria[accion_seleccionada].keys())
+    participaciones = list(composicion_accionaria[accion_seleccionada].values())
     fig = go.Figure(data=[go.Pie(labels=accionistas, values=participaciones, hole=.3)])
     return fig
 if __name__ == '__main__':
