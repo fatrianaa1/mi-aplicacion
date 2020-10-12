@@ -176,19 +176,34 @@ lista_indicadores_inferiores = ["MACD", "RSI"]
 # Diccionario de diccionarios con información de composición accionaria:
 # En el caso de empresas con acciones preferenciales es la suma de preferenciales y ordinarias
 composicion_accionaria = {"BCOLOMBIA": {"Grupo de Inversiones Suramericana": 234027881,
-                                        "Fondo Bancolombia ADR Program": 156917764, 
-                                        "Fondo de Pensiones Obligatorias Porvenir Moderado": 50883394+23502497, 
-                                        "Fondo de Pensiones Obligatorias Protección Moderado": 21048882+53667418, 
+                                        "Fdo. Bancolombia ADR Program": 156917764, 
+                                        "Fdo. Pensiones Obligatorias Porvenir Moderado": 50883394+23502497, 
+                                        "Fdo. Pensiones Obligatorias Protección Moderado": 21048882+53667418, 
                                         "Otros":421779164}, 
                           "BOGOTA": {"Grupo Aval Acciones y Valores S.A": 227710487, 
                                      "Consultorías de Inversiones S.A": 32140397, 
                                      "Rendifin S.A": 11439891, 
                                      "Adminegocios & Cia SCA": 9062222, 
-                                     "Otros":50927558}, 
+                                     "Otros":50927558},
+                          "BVC": {"Utilico Emerging Markets Trust PLC": 4724436, 
+                                  "BBVA Colombia S.A": 4436539, 
+                                  "Banco Davivienda S.A": 3825700, 
+                                  "B3 S.A": 3697218, 
+                                  "Otros": 43829576}, 
+                          "CELSIA": {"Grupo Argos S.A": 566360307, 
+                                     "Fdo. Pensiones Obligatorias Porvenir Moderado": 85229516, 
+                                     "Fdo. Pensiones Obligatorias Protección Moderado": 82110895, 
+                                     "Fdo. Bursatil Ishares Colcap": 35527384, 
+                                     "Otros": 300744452},
+                          "CEMARGOS": {"Grupo Argos S.A": 668786536, 
+                                       "Fdo. Pensiones Obligatorias Protección Moderado": 67452055+35915250, 
+                                       "Fdo. Pensiones Obligatorias Porvenir Moderado": 49712014+45820462,
+                                       "Fdo. Bursatil Ishares Colcap": 34521509+14545954, 
+                                       "Otros": 444116380}, 
                           "ECOPETROL": {"Entidades Estatales": 36384788417, 
                                         "JP Morgan Chase Bank NA FBO Holders Of DR Ecopetrol": 800624420, 
-                                        "Fondo de Pensiones Obligatorias Porvenir Moderado": 420491354, 
-                                        "Fondo de Pensiones Obligatorias Protección Moderado": 334489075, 
+                                        "Fdo. Pensiones Obligatorias Porvenir Moderado": 420491354, 
+                                        "Fdo. Pensiones Obligatorias Protección Moderado": 334489075, 
                                         "Otros": 3176301424}}
 
 
@@ -504,6 +519,10 @@ def grafico_de_accionistas(accion_seleccionada):
     accionistas = list(composicion_accionaria[accion_seleccionada].keys())
     participaciones = list(composicion_accionaria[accion_seleccionada].values())
     fig = go.Figure(data=[go.Pie(labels=accionistas, values=participaciones, hole=.3)])
+    fig.update_layout(legend={"xanchor": "center", 
+                              "yanchor": "top",
+                              "y": 0, 
+                              "x": 0.5})
     return fig
 if __name__ == '__main__':
     app.run_server()
