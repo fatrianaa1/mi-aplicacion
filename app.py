@@ -199,12 +199,38 @@ composicion_accionaria = {"BCOLOMBIA": {"Grupo de Inversiones Suramericana": 234
                                        "Fdo. Pensiones Obligatorias Protección Moderado": 67452055+35915250, 
                                        "Fdo. Pensiones Obligatorias Porvenir Moderado": 49712014+45820462,
                                        "Fdo. Bursatil Ishares Colcap": 34521509+14545954, 
-                                       "Otros": 444116380}, 
+                                       "Otros": 444116380},
+                          "CNEC": {"CDS & Co": 102089967, 
+                                   "CEDE & Co": 46154417, 
+                                   "Doverton Investments S.A": 6072154, 
+                                   "Fdo. Bursatil Ishares Colcap": 5735630, 
+                                   "Otros": 17570832},
+                          "CONCONCRET": {"Vinci Colombie S.A.S": 226850988, 
+                                         "Patrimonio Autónomo San Luis": 84728844, 
+                                         "Idearlu S.A.S": 60002086, 
+                                         "Fdo. Pensiones Obligatorias Colfondos Moderado": 55011365, 
+                                         "Otros": 707661656},
+                          "CORFICOLCF": {"Banco de Bogotá S.A": 110401769, 
+                                         "Adminegocios S.A.S": 35714947, 
+                                         "Grupo Aval Acciones y Valores S.A": 27270567, 
+                                         "Banco Popular S.A": 16522863, 
+                                         "Otros": 134100862}, 
                           "ECOPETROL": {"Entidades Estatales": 36384788417, 
                                         "JP Morgan Chase Bank NA FBO Holders Of DR Ecopetrol": 800624420, 
                                         "Fdo. Pensiones Obligatorias Porvenir Moderado": 420491354, 
                                         "Fdo. Pensiones Obligatorias Protección Moderado": 334489075, 
-                                        "Otros": 3176301424}}
+                                        "Otros": 3176301424}, 
+                          "ETB": {"Bogotá Distrito Capital": 3066154179, 
+                                  "Persona natural": 100005238, 
+                                  "Universidad Distrital Francisco José de Caldas": 71011068, 
+                                  "Amber Global Opportunities Ltd": 68912646, 
+                                  "Otros": 244470281}, 
+                          "EXITO": {"Sendas Distribuidora S.A.S": 432256668, 
+                                    "Fdo. Bursatil Ishares Colcap": 5662510, 
+                                    "Fdo. Pensiones Obligatorias Protección Mayor Riesgo": 1325159, 
+                                    "Fdo. Pensiones Protección - PI": 1271681, 
+                                    "Otros": 7088298}}
+                
 
 
 # Inicializar la aplicación:
@@ -522,7 +548,7 @@ def grafico_de_accionistas(accion_seleccionada):
     fig.update_layout(legend={"xanchor": "center", 
                               "yanchor": "top",
                               "y": 0, 
-                              "x": 0.5})
+                              "x": 0})
     return fig
 if __name__ == '__main__':
     app.run_server()
