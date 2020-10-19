@@ -229,7 +229,17 @@ composicion_accionaria = {"BCOLOMBIA": {"Grupo de Inversiones Suramericana": 234
                                     "Fdo. Bursatil Ishares Colcap": 5662510, 
                                     "Fdo. Pensiones Obligatorias Protección Mayor Riesgo": 1325159, 
                                     "Fdo. Pensiones Protección - PI": 1271681, 
-                                    "Otros": 7088298}}
+                                    "Otros": 7088298}, 
+                          "GEB": {"Bogotá Distrito Capital": 6030406241, 
+                                  "Fdo. Pensiones Obligatorias Porvenir Moderado": 773621230, 
+                                  "Fdo. Pensiones Obligatorias Protección Moderado": 547711351, 
+                                  "Corporación Financiera Colombiana S.A": 475298648, 
+                                  "Otros": 1354139547}, 
+                          "GRUPOARGOS": {"Grupo de Inversiones Suramericana S.A": 229295179, 
+                                         "Grupo Nutresa S.A": 79804628, 
+                                         "Fdo. Pensiones Obligatorias Protección Moderado": 22668983+44166780, 
+                                         "Fdo. Pensiones Obligatorias Porvenir Moderado": 25892288+35376989, 
+                                         "Otros": 420022333}}
                 
 
 
@@ -437,7 +447,8 @@ def grafica_principal(accion_seleccionada, intervalo_fechas, indicadores_superio
     # Eliminar la leyenda:
     grafico.data["showlegend"] = False
     el_grafico_principal = grafico.figure()
-    el_grafico_principal.update_layout(showlegend=False)
+    el_grafico_principal.update_layout(showlegend = False)
+    #el_graficio_principal.update_layout(yaxis_tickprefix = '$')
     # el_grafico_principal.update_layout(xaxis_rangeslider_visible=False)
 
     # Devolver el gráfico principal:
